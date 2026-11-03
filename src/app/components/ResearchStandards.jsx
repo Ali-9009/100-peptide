@@ -1,723 +1,539 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import {
-  Activity,
-  Atom,
-  Scale,
+  Fingerprint,
   ShieldCheck,
-  FileCheck2,
-  ScanLine,
-  FlaskConical,
+  Scale,
+  ScanSearch,
+  Dna,
+  Activity,
   ArrowUpRight,
+  Check,
+  FlaskConical,
+  ArrowLeft,
   ArrowRight,
 } from "lucide-react";
 
-import gsap from "gsap";
-import AOS from "aos";
-import "aos/dist/aos.css";
-
-// ==========================================
-// DATA  (replace with your own `standards`)
-// Required: id, number, title, short, description, method, icon
-// Optional: output (what the report shows), trace (signal peaks [x, height, width])
-// ==========================================
-
 const standards = [
   {
-    id: "purity",
-    number: "01",
-    title: "Purity Analysis",
-    short: "How much of the sample is the target compound.",
+    id: "01",
+    title: "Identification",
+    method: "HPLC + LC-MS",
     description:
-      "Chromatographic analysis separates the sample into its components so the main compound can be compared against everything else detected.",
-    method: "HPLC chromatography",
-    output: "Purity percentage and chromatogram",
-    icon: Activity,
-    trace: [
-      [55, 8, 5],
-      [140, 38, 6],
-      [205, 12, 5],
-      [250, 6, 4],
-    ],
+      "Analytical techniques used to assess compound identity and characterize the material under investigation.",
+    icon: Fingerprint,
   },
   {
-    id: "identity",
-    number: "02",
-    title: "Identity Confirmation",
-    short: "Does the molecule match what the label says.",
+    id: "02",
+    title: "Purity",
+    method: "Chromatographic analysis",
     description:
-      "Mass spectrometry measures molecular weight so the detected compound can be compared with the expected value for the labeled material.",
-    method: "Mass spectrometry",
-    output: "Measured vs. expected mass",
-    icon: Atom,
-    trace: [
-      [40, 5, 3],
-      [95, 14, 3],
-      [150, 40, 3],
-      [200, 20, 3],
-      [255, 9, 3],
-    ],
-  },
-  {
-    id: "content",
-    number: "03",
-    title: "Quantity Verification",
-    short: "How much compound is in each vial.",
-    description:
-      "Content testing checks the amount of material in a vial against the labeled amount, which is separate from purity.",
-    method: "Quantitative assay",
-    output: "Measured amount per vial",
-    icon: Scale,
-    trace: [
-      [90, 18, 14],
-      [160, 34, 12],
-      [225, 22, 14],
-    ],
-  },
-  {
-    id: "safety",
-    number: "04",
-    title: "Contaminant Screening",
-    short: "Checks for unwanted residues and impurities.",
-    description:
-      "Screening looks for substances that should not be present, such as residual solvents or endotoxin, depending on the test scope.",
-    method: "Targeted screening panels",
-    output: "Pass / fail against limits",
+      "Chromatographic methods help assess sample purity and distinguish the principal compound from detectable impurities.",
     icon: ShieldCheck,
-    trace: [
-      [60, 10, 8],
-      [120, 6, 6],
-      [190, 26, 9],
-      [250, 8, 6],
-    ],
   },
   {
-    id: "docs",
-    number: "05",
-    title: "Report Documentation",
-    short: "Understanding what a report actually states.",
+    id: "03",
+    title: "Net Content",
+    method: "Measured mass per vial",
     description:
-      "A certificate of analysis records the methods, batch details and results so each figure can be traced back to a specific test.",
-    method: "Certificate of analysis",
-    output: "Batch-linked test summary",
-    icon: FileCheck2,
-    trace: [
-      [70, 22, 16],
-      [150, 30, 16],
-      [230, 18, 16],
-    ],
+      "Measurement of the material contained in each vial using an appropriate analytical procedure.",
+    icon: Scale,
+  },
+  {
+    id: "04",
+    title: "Endotoxins",
+    method: "Bacterial endotoxin screen",
+    description:
+      "Screening methods used to investigate bacterial endotoxin contamination in a sample.",
+    icon: ScanSearch,
+  },
+  {
+    id: "05",
+    title: "Sterility",
+    method: "PCR screen",
+    description:
+      "PCR-based screening can investigate specified microbial genetic material. It does not independently establish sterility.",
+    icon: Dna,
   },
 ];
 
-const AUTOPLAY_MS = 6500;
-const BASE = 50;
-
-const buildTrace = (peaks) => {
-  let d = "";
-  for (let x = 0; x <= 300; x += 2) {
-    let y = 0;
-    peaks.forEach(([c, h, w]) => {
-      y += h * Math.exp(-(((x - c) / w) ** 2));
-    });
-    d += `${x === 0 ? "M" : "L"}${x},${(BASE - y).toFixed(1)} `;
-  }
-  return d;
-};
+const positions = [
+  "top-[8%] left-[0%]",
+  "top-[8%] right-[0%]",
+  "bottom-[22%] left-[0%]",
+  "bottom-[22%] right-[0%]",
+  "bottom-[0%] left-1/2 -translate-x-1/2",
+];
 
 export default function ResearchStandards() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [inView, setInView] = useState(false);
-  const [reduced, setReduced] = useState(false);
+  const sectionRef = useRef(null);
+  const glowRef = useRef(null);
 
-  const gridRef = useRef(null);
-  const consoleRef = useRef(null);
-  const infoRef = useRef(null);
-  const iconRef = useRef(null);
-  const itemRefs = useRef([]);
-  const firstRun = useRef(true);
+  const productRef = useRef(null);
+  const orbitRef = useRef(null);
+
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const active = standards[activeIndex];
   const ActiveIcon = active.icon;
 
-  const tracePath = useMemo(
-    () =>
-      buildTrace(
-        active.trace || [
-          [60, 14, 6],
-          [150, 34, 5],
-          [220, 20, 7],
-        ],
-      ),
-    [active],
-  );
-
-  const next = () => setActiveIndex((i) => (i + 1) % standards.length);
-
-  // ==========================================
-  // AOS + reduced motion + in-view detection
-  // ==========================================
-
-  useEffect(() => {
-    const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setReduced(rm);
-
-    AOS.init({
-      duration: 900,
-      easing: "ease-out-cubic",
-      once: true,
-      offset: 60,
-      disable: () => rm,
-    });
-    AOS.refresh();
-
-    const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { threshold: 0.35 },
-    );
-    if (gridRef.current) io.observe(gridRef.current);
-
-    return () => io.disconnect();
-  }, []);
-
-  // ==========================================
-  // 3D TILT ON THE CONSOLE (mouse only)
-  // ==========================================
-
-  useEffect(() => {
-    const el = consoleRef.current;
-    if (!el) return;
-
-    const ok = window.matchMedia(
-      "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
-    ).matches;
-    if (!ok) return;
-
-    gsap.set(el, { transformPerspective: 1100 });
-
-    const rx = gsap.quickTo(el, "rotationX", {
-      duration: 0.7,
-      ease: "power3.out",
-    });
-    const ry = gsap.quickTo(el, "rotationY", {
-      duration: 0.7,
-      ease: "power3.out",
-    });
-
-    const move = (e) => {
-      const r = el.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
-      ry(px * 9);
-      rx(-py * 9);
-      el.style.setProperty("--gx", `${(px + 0.5) * 100}%`);
-      el.style.setProperty("--gy", `${(py + 0.5) * 100}%`);
-    };
-    const leave = () => {
-      rx(0);
-      ry(0);
-    };
-
-    el.addEventListener("pointermove", move);
-    el.addEventListener("pointerleave", leave);
-    return () => {
-      el.removeEventListener("pointermove", move);
-      el.removeEventListener("pointerleave", leave);
-    };
-  }, []);
-
-  // ==========================================
-  // CONTENT TRANSITION ON CHANGE
-  // ==========================================
-
-  useEffect(() => {
-    if (firstRun.current) {
-      firstRun.current = false;
-      return;
-    }
-    if (reduced) return;
-
-    if (infoRef.current) {
-      gsap.fromTo(
-        infoRef.current.children,
-        { y: 18, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.08,
-          ease: "power3.out",
-          overwrite: true,
-        },
-      );
-    }
-
-    if (iconRef.current) {
-      gsap.fromTo(
-        iconRef.current,
-        { rotationY: -140, scale: 0.6, opacity: 0, transformPerspective: 700 },
-        {
-          rotationY: 0,
-          scale: 1,
-          opacity: 1,
-          duration: 0.8,
-          ease: "back.out(1.7)",
-          overwrite: true,
-        },
-      );
-    }
-  }, [activeIndex, reduced]);
-
-  // ==========================================
-  // KEYBOARD NAVIGATION
-  // ==========================================
-
-  const onKeyDown = (e) => {
-    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
-    e.preventDefault();
-    const dir = e.key === "ArrowDown" ? 1 : -1;
-    const i = (activeIndex + dir + standards.length) % standards.length;
-    setActiveIndex(i);
-    itemRefs.current[i]?.focus();
+  const selectStep = (index) => {
+    setActiveIndex((index + standards.length) % standards.length);
   };
 
-  const running = !reduced && inView && !paused;
+  // ============================================
+  // GSAP
+  // ============================================
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Entrance animations
+        const entrance = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        });
+
+        entrance
+          .fromTo(
+            "[data-reveal='heading']",
+            {
+              opacity: 0,
+              y: -35,
+            },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.85,
+              ease: "power3.out",
+            },
+          )
+          .fromTo(
+            productRef.current,
+            {
+              opacity: 0,
+              y: 90,
+              scale: 0.75,
+              rotation: -10,
+            },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              rotation: 0,
+              duration: 1.15,
+              ease: "back.out(1.5)",
+            },
+            "-=0.45",
+          )
+          .fromTo(
+            "[data-research-point]",
+            {
+              opacity: 0,
+              y: 25,
+              scale: 0.8,
+            },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.65,
+              stagger: 0.1,
+              ease: "back.out(1.7)",
+            },
+            "-=0.7",
+          )
+          .fromTo(
+            "[data-reveal='panel']",
+            {
+              opacity: 0,
+              x: 45,
+            },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.8,
+              ease: "power3.out",
+            },
+            "-=0.65",
+          );
+
+        // Continuous product float
+        gsap.to(productRef.current, {
+          y: -11,
+          rotation: 1.5,
+          duration: 3.8,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            toggleActions: "play pause resume pause",
+          },
+        });
+
+        // Rotating orbit
+        gsap.to(orbitRef.current, {
+          rotation: 360,
+          duration: 65,
+          repeat: -1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            toggleActions: "play pause resume pause",
+          },
+        });
+
+        // Subtle checkpoint movement
+        gsap.utils.toArray("[data-point-inner]").forEach((element, index) => {
+          gsap.to(element, {
+            y: index % 2 === 0 ? -6 : 6,
+            duration: 3 + index * 0.35,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              toggleActions: "play pause resume pause",
+            },
+          });
+        });
+
+        return () => {};
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // ============================================
+  // CURSOR LIGHT
+  // ============================================
+
+  const handlePointerMove = (event) => {
+    if (
+      event.pointerType !== "mouse" ||
+      !sectionRef.current ||
+      !glowRef.current
+    ) {
+      return;
+    }
+
+    const rect = sectionRef.current.getBoundingClientRect();
+
+    gsap.to(glowRef.current, {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+      duration: 0.8,
+      ease: "power3.out",
+      overwrite: true,
+    });
+  };
 
   return (
     <section
+      ref={sectionRef}
       id="research-standards"
-      aria-labelledby="standards-heading"
-      className="relative isolate overflow-hidden bg-[#f7f9fc] px-5 py-20 sm:px-8 lg:py-28"
+      aria-labelledby="research-standards-title"
+      onPointerMove={handlePointerMove}
+      className="relative isolate mx-auto flex min-h-svh max-w-7xl items-center overflow-hidden rounded-3xl bg-[#050e22] px-4 py-16 text-white sm:px-8 md:py-12"
     >
-      <style>{`
-        @keyframes rs-fill{from{width:0}to{width:100%}}
-        @keyframes rs-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
-        @keyframes rs-scan{0%{top:6%}100%{top:94%}}
-        @keyframes rs-float{0%,100%{translate:0 0}50%{translate:0 -8px}}
-        @keyframes rs-fade{from{opacity:0}to{opacity:1}}
-      `}</style>
-
-      {/* BACKGROUND DETAILS */}
+      {/* BACKGROUND */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-60 right-[-15%] -z-10 h-[650px] w-[650px] rounded-full bg-[#dcecff]/60 blur-[130px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-[-10%] left-[-10%] -z-10 size-[420px] rounded-full bg-[#cfe3fb]/40 blur-[120px]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_48%_45%,#193976_0%,#091834_52%,#050e22_88%)]"
       />
 
-      <div className="relative mx-auto max-w-7xl">
-        {/* SECTION INTRO */}
-        <div
-          data-aos="fade-up"
-          className="mb-12 flex flex-col justify-between gap-7 lg:mb-16 lg:flex-row lg:items-end"
+      {/* GRID */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:65px_65px] opacity-[0.05]"
+      />
+
+      {/* INTERACTIVE GLOW */}
+      <div
+        ref={glowRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute top-0 left-0 -z-10 size-[450px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#438bff]/10 blur-[90px]"
+      />
+
+      <div className="relative mx-auto w-full max-w-[1320px]">
+        {/* ============================================
+            COMPACT HEADING
+        ============================================ */}
+
+        <header
+          data-reveal="heading"
+          className="mx-auto mb-7 max-w-[780px] text-center sm:mb-9 lg:mb-5"
         >
-          <div className="max-w-[900px]">
-            <h2
-              id="standards-heading"
-              className="font-heading text-primary text-[clamp(40px,5.5vw,76px)] leading-[1.06] font-semibold tracking-[-0.055em]"
+          <h2
+            id="research-standards-title"
+            className="font-heading text-[clamp(32px,4vw,52px)] leading-[1.05] font-semibold tracking-[-0.05em]"
+          >
+            A Closer Look at{" "}
+            <span className="text-[#8dbfff]">Research Standards.</span>
+          </h2>
+
+          <p className="mx-auto mt-3 max-w-[540px] font-sans text-[13px] leading-relaxed text-[#9cb2d2] sm:text-[15px]">
+            Explore five analytical considerations associated with research
+            compounds.
+          </p>
+        </header>
+
+        {/* ============================================
+            MAIN LAYOUT
+        ============================================ */}
+
+        <div className="grid min-w-0 items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,320px)] xl:grid-cols-[minmax(0,1fr)_350px] xl:gap-8">
+          {/* ============================================
+              LEFT VISUAL
+          ============================================ */}
+
+          <div className="relative mx-auto h-[330px] w-full max-w-[790px] min-w-0 sm:h-[430px] md:h-[490px] lg:h-[min(65svh,560px)] xl:h-[min(67svh,600px)]">
+            {/* CENTERED ORBIT WRAPPER */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 flex items-center justify-center"
             >
-              Precision isn&rsquo;t
-              <br />a promise.
-              <span className="text-[#5794d1]"> It&rsquo;s a process.</span>
-            </h2>
+              {/* INNER RING */}
+              <div className="absolute size-[210px] rounded-full border border-[#8dbfff]/10 sm:size-[300px] md:size-[350px] lg:size-[min(37vw,400px)]" />
+
+              {/* ROTATING RING POSITION WRAPPER */}
+              <div className="absolute size-[260px] sm:size-[370px] md:size-[420px] lg:size-[min(43vw,480px)]">
+                <div
+                  ref={orbitRef}
+                  className="relative h-full w-full rounded-full border border-dashed border-[#8dbfff]/20"
+                >
+                  <span className="absolute top-1/2 -left-1 size-2.5 -translate-y-1/2 rounded-full bg-[#8dbfff] shadow-[0_0_20px_#8dbfff]" />
+                </div>
+              </div>
+
+              {/* CENTER GLOW */}
+              <div className="absolute size-[220px] rounded-full bg-[#438bff]/15 blur-[65px] sm:size-[320px]" />
+            </div>
+
+            {/* ============================================
+                PRODUCT — CENTERED
+            ============================================ */}
+
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+              <div className="h-[230px] w-[190px] sm:h-[310px] sm:w-[250px] md:h-[350px] md:w-[280px] lg:h-[min(48svh,430px)] lg:w-[min(30vw,340px)]">
+                <div ref={productRef} className="relative h-full w-full">
+                  <Image
+                    src="/assets/bpc-157.png"
+                    alt="BPC-157 research peptide vial"
+                    fill
+                    sizes="(max-width: 640px) 190px, (max-width: 1024px) 280px, 340px"
+                    className="object-contain drop-shadow-[0_30px_45px_rgba(0,0,0,0.45)]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* ============================================
+                DESKTOP FLOATING CHECKPOINTS
+            ============================================ */}
+
+            <div className="hidden lg:block">
+              {standards.map((item, index) => {
+                const Icon = item.icon;
+                const isActive = activeIndex === index;
+
+                return (
+                  <div
+                    key={item.id}
+                    data-research-point
+                    className={`absolute z-20 ${positions[index]}`}
+                  >
+                    {/* INNER FLOAT ELEMENT */}
+                    <div data-point-inner>
+                      <button
+                        type="button"
+                        onClick={() => selectStep(index)}
+                        onMouseEnter={() => selectStep(index)}
+                        aria-pressed={isActive}
+                        aria-label={`${item.title}: ${item.method}`}
+                        className={`group flex w-[145px] items-center gap-2.5 rounded-2xl border px-3 py-3 text-left backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 xl:w-[185px] ${
+                          isActive
+                            ? "border-[#83b8ff] bg-[#2b579f]/95 shadow-[0_15px_35px_rgba(0,0,0,0.2)]"
+                            : "border-white/15 bg-[#122448]/90 hover:border-[#83b8ff]/50 hover:bg-[#1c376a]"
+                        } `}
+                      >
+                        <span
+                          className={`grid size-9 shrink-0 place-items-center rounded-xl transition-all duration-300 group-hover:scale-110 ${
+                            isActive
+                              ? "text-primary bg-white"
+                              : "bg-[#263f70] text-[#a3caff]"
+                          } `}
+                        >
+                          <Icon size={19} strokeWidth={1.6} />
+                        </span>
+
+                        <span className="min-w-0">
+                          <span className="font-heading block text-[13px] leading-tight font-semibold">
+                            {item.title}
+                          </span>
+
+                          <span className="mt-1 block text-[10px] leading-snug text-[#b1c9e9]">
+                            {item.method}
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <p
-            data-aos="fade-up"
-            data-aos-delay="150"
-            className="max-w-[360px] font-sans text-base leading-[1.8] text-[#64748b] sm:text-lg"
-          >
-            Explore five important analytical checkpoints used to understand
-            research peptide quality and documentation.
-          </p>
-        </div>
+          {/* ============================================
+              MOBILE / TABLET SELECTORS
+          ============================================ */}
 
-        {/* MAIN INTERACTIVE AREA */}
-        <div
-          ref={gridRef}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onFocus={() => setPaused(true)}
-          onBlur={() => setPaused(false)}
-          className="grid grid-cols-1 gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:gap-6"
-        >
-          {/* =====================================
-              LEFT: CHECKPOINT LIST
-          ===================================== */}
-          <div
-            role="group"
-            aria-label="Research checkpoints"
-            onKeyDown={onKeyDown}
-            className="order-2 flex flex-col gap-3 lg:order-1"
-          >
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:hidden">
             {standards.map((item, index) => {
               const Icon = item.icon;
-              const isActive = activeIndex === index;
+              const selected = activeIndex === index;
 
               return (
-                <div
+                <button
                   key={item.id}
-                  data-aos="fade-right"
-                  data-aos-delay={index * 90}
+                  type="button"
+                  onClick={() => selectStep(index)}
+                  aria-pressed={selected}
+                  className={`flex min-h-[65px] items-center gap-2 rounded-xl border px-3 py-2 text-left transition-all duration-300 ${
+                    selected
+                      ? "border-[#82b7ff] bg-[#2b579f]"
+                      : "border-white/10 bg-[#142749] hover:border-[#82b7ff]/40"
+                  } `}
                 >
-                  <button
-                    ref={(el) => {
-                      itemRefs.current[index] = el;
-                    }}
-                    type="button"
-                    onClick={() => setActiveIndex(index)}
-                    onMouseEnter={() => setActiveIndex(index)}
-                    onPointerMove={(e) => {
-                      const r = e.currentTarget.getBoundingClientRect();
-                      e.currentTarget.style.setProperty(
-                        "--mx",
-                        `${e.clientX - r.left}px`,
-                      );
-                      e.currentTarget.style.setProperty(
-                        "--my",
-                        `${e.clientY - r.top}px`,
-                      );
-                    }}
-                    aria-pressed={isActive}
-                    className={`group relative flex min-h-[112px] w-full items-center gap-4 overflow-hidden rounded-[22px] border px-5 py-5 text-left transition-[background-color,border-color,box-shadow,translate,scale] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:ring-2 focus-visible:ring-[#5794d1] focus-visible:ring-offset-2 focus-visible:outline-none sm:gap-5 sm:px-7 ${
-                      isActive
-                        ? "border-primary bg-primary scale-[1.02] text-white shadow-[0_24px_50px_-22px_rgba(11,27,63,0.55)]"
-                        : "text-primary border-[#e0e8f2] bg-white hover:-translate-y-0.5 hover:border-[#a9c5e5] hover:shadow-[0_14px_30px_-20px_rgba(11,27,63,0.3)]"
-                    }`}
-                  >
-                    {/* CURSOR SPOTLIGHT */}
-                    <span
-                      aria-hidden="true"
-                      className={`pointer-events-none absolute inset-0 transition-opacity duration-300 group-hover:opacity-100 ${
-                        isActive ? "opacity-0" : "opacity-0"
-                      } bg-[radial-gradient(260px_circle_at_var(--mx,50%)_var(--my,50%),rgba(87,148,209,0.16),transparent_70%)]`}
-                    />
+                  <Icon
+                    size={19}
+                    className={
+                      selected
+                        ? "shrink-0 text-white"
+                        : "shrink-0 text-[#91bcfa]"
+                    }
+                  />
 
-                    {/* BACKGROUND ACCENT */}
-                    <div
-                      aria-hidden="true"
-                      className={`pointer-events-none absolute -right-16 -bottom-28 size-56 rounded-full blur-[50px] transition-opacity duration-500 ${
-                        isActive
-                          ? "bg-[#4579c9]/25 opacity-100"
-                          : "bg-[#b7d9ff]/30 opacity-0 group-hover:opacity-100"
-                      }`}
-                    />
-
-                    {/* NUMBER */}
-                    <span
-                      className={`font-heading relative z-10 w-9 shrink-0 text-[20px] font-semibold transition-colors duration-500 sm:w-11 sm:text-[24px] ${
-                        isActive ? "text-[#91b9f5]" : "text-[#a3b6cb]"
-                      }`}
-                    >
-                      {item.number}
-                    </span>
-
-                    {/* ICON */}
-                    <div
-                      className={`relative z-10 grid size-[50px] shrink-0 place-items-center rounded-2xl border transition-all duration-500 sm:size-[58px] ${
-                        isActive
-                          ? "border-white/15 bg-white/10 text-white"
-                          : "text-primary border-[#e2eaf4] bg-[#f2f7fd]"
-                      }`}
-                    >
-                      <Icon
-                        size={25}
-                        strokeWidth={1.5}
-                        className="transition-transform duration-500 group-hover:scale-110"
-                      />
-                    </div>
-
-                    {/* CONTENT */}
-                    <div className="relative z-10 min-w-0 flex-1">
-                      <h3 className="font-heading text-[20px] leading-tight font-semibold tracking-tight sm:text-[23px]">
-                        {item.title}
-                      </h3>
-
-                      <p
-                        className={`mt-1.5 font-sans text-[13px] leading-relaxed transition-colors duration-500 sm:text-[14px] ${
-                          isActive ? "text-white/65" : "text-[#8290a3]"
-                        }`}
-                      >
-                        {item.short}
-                      </p>
-                    </div>
-
-                    {/* ARROW */}
-                    <div
-                      className={`relative z-10 hidden size-10 shrink-0 place-items-center rounded-full transition-all duration-500 sm:grid ${
-                        isActive
-                          ? "text-primary bg-white"
-                          : "text-primary group-hover:bg-primary bg-[#f1f6fc] group-hover:text-white"
-                      }`}
-                    >
-                      <ArrowUpRight
-                        size={19}
-                        strokeWidth={1.7}
-                        className={`transition-transform duration-500 ${isActive ? "rotate-45" : ""}`}
-                      />
-                    </div>
-
-                    {/* AUTOPLAY PROGRESS */}
-                    {isActive && !reduced && (
-                      <span
-                        key={activeIndex}
-                        aria-hidden="true"
-                        onAnimationEnd={next}
-                        className="absolute bottom-0 left-0 z-10 h-[3px] rounded-r-full bg-gradient-to-r from-[#5794d1] to-[#9fd0ff]"
-                        style={{
-                          animation: `rs-fill ${AUTOPLAY_MS}ms linear forwards`,
-                          animationPlayState: running ? "running" : "paused",
-                        }}
-                      />
-                    )}
-                  </button>
-                </div>
+                  <span className="min-w-0 text-[12px] leading-tight font-semibold">
+                    {item.title}
+                  </span>
+                </button>
               );
             })}
           </div>
 
-          {/* =====================================
-              RIGHT: VERIFICATION CONSOLE (3D)
-          ===================================== */}
-          <div
-            data-aos="fade-left"
-            className="order-1 lg:order-2 lg:min-h-full"
+          {/* ============================================
+              INTERACTIVE DETAIL PANEL
+          ============================================ */}
+
+          <aside
+            data-reveal="panel"
+            className="relative min-w-0 overflow-hidden rounded-[24px] border border-[#7eaee8]/20 bg-[#10254b]/80 p-5 backdrop-blur-xl sm:p-6 lg:self-center"
           >
+            {/* PANEL GLOW */}
             <div
-              ref={consoleRef}
-              className="relative flex min-h-[600px] flex-col p-6 text-white will-change-transform [transform-style:preserve-3d] sm:min-h-[680px] sm:p-9 lg:h-full lg:min-h-full lg:p-10"
-            >
-              {/* BACKDROP (clipped layer; kept apart from the 3D children) */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-30px_rgba(7,21,47,0.7)] lg:rounded-[32px]"
-              >
-                <div className="absolute inset-0 bg-[linear-gradient(145deg,#07152f_0%,#102d66_58%,#1f57a2_100%)]" />
-                <div className="absolute top-[15%] right-[-25%] size-[450px] rounded-full bg-[#4b91ff]/25 blur-[100px]" />
-                <div className="absolute inset-0 [background-image:linear-gradient(rgba(255,255,255,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.2)_1px,transparent_1px)] [background-size:42px_42px] opacity-[0.12]" />
-                {/* cursor light */}
-                <div className="absolute inset-0 bg-[radial-gradient(380px_circle_at_var(--gx,70%)_var(--gy,30%),rgba(140,188,255,0.22),transparent_65%)]" />
-                {/* glass edge */}
-                <div className="absolute inset-0 rounded-[inherit] border border-white/15" />
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-24 -right-24 size-56 rounded-full bg-[#6ca9ff]/10 blur-[50px]"
+            />
+
+            {/* TOP */}
+            <div className="relative flex items-center justify-between">
+              <span className="text-[10px] font-semibold tracking-[0.16em] text-[#96b7e1] uppercase">
+                Selected Checkpoint
+              </span>
+            </div>
+
+            {/* CHANGING CONTENT */}
+            <div key={active.id} className="relative mt-5" aria-live="polite">
+              <div className="mb-4 grid size-[60px] place-items-center rounded-[17px] border border-[#8abfff]/25 bg-[#326bb8]/25 text-[#9fccff]">
+                <ActiveIcon size={29} strokeWidth={1.5} />
               </div>
 
-              {/* TOP BAR */}
-              <div className="relative flex [transform:translateZ(30px)] items-center justify-between gap-4">
-                <div className="flex items-center gap-2.5">
-                  <span className="relative flex size-2.5">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-300 opacity-40" />
-                    <span className="relative inline-flex size-2.5 rounded-full bg-sky-300" />
-                  </span>
+              <h3 className="font-heading text-[clamp(29px,3vw,38px)] leading-[1.1] font-semibold tracking-[-0.04em]">
+                {active.title}
+              </h3>
 
-                  <span className="font-sans text-[11px] font-semibold tracking-[0.16em] text-white/70 uppercase sm:text-xs">
-                    Research Checkpoints
-                  </span>
-                </div>
+              <div className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full border border-[#8cbfff]/20 bg-[#5a94e0]/10 px-3 py-2">
+                <Check size={14} className="shrink-0 text-[#9ac9ff]" />
 
-                <span className="rounded-full border border-white/20 bg-white/10 px-3 py-2 font-sans text-[11px] font-semibold tracking-wider text-white/80">
-                  {String(activeIndex + 1).padStart(2, "0")} /{" "}
-                  {String(standards.length).padStart(2, "0")}
+                <span className="text-[12px] font-semibold text-[#b9d9ff]">
+                  {active.method}
                 </span>
               </div>
 
-              {/* CENTRAL SCIENTIFIC VISUAL */}
-              <div className="relative flex min-h-[290px] flex-1 items-center justify-center py-8 sm:min-h-[330px]">
-                <div className="absolute size-[260px] rounded-full border border-white/10 sm:size-[330px]" />
-                <div className="absolute size-[220px] animate-[spin_35s_linear_infinite] rounded-full border border-dashed border-[#8cbcff]/30 sm:size-[285px]" />
-                <div className="absolute size-[175px] rounded-full border border-white/15 sm:size-[220px]" />
+              <p className="mt-5 min-h-[72px] font-sans text-[14px] leading-[1.75] text-[#acbfdc]">
+                {active.description}
+              </p>
+            </div>
 
-                {/* SCAN SWEEP (clipped to inner ring) */}
-                {!reduced && (
-                  <div className="absolute size-[175px] overflow-hidden rounded-full sm:size-[220px]">
-                    <span
-                      className="absolute left-0 h-px w-full bg-gradient-to-r from-transparent via-sky-300 to-transparent shadow-[0_0_14px_#7cc5ff]"
-                      style={{
-                        animation:
-                          "rs-scan 3.2s ease-in-out infinite alternate",
-                      }}
-                    />
-                  </div>
-                )}
-
-                {/* ORBIT POINTS */}
-                <div className="absolute size-[260px] animate-[spin_25s_linear_infinite] sm:size-[330px]">
-                  <span className="absolute top-1/2 -left-1 size-2.5 -translate-y-1/2 rounded-full bg-[#8bc5ff] shadow-[0_0_20px_#8bc5ff]" />
-                  <span className="absolute top-0 left-1/2 size-2 -translate-x-1/2 rounded-full bg-white/70" />
-                </div>
-
-                {/* CENTER ICON (floats forward in 3D) */}
-                <div
-                  className="relative [transform:translateZ(70px)]"
-                  style={
-                    reduced
-                      ? undefined
-                      : { animation: "rs-float 5s ease-in-out infinite" }
-                  }
-                >
-                  <div className="grid size-[130px] place-items-center rounded-full border border-white/20 bg-white/10 shadow-[0_0_70px_rgba(92,160,255,0.25)] backdrop-blur-lg sm:size-[160px]">
-                    <div className="absolute inset-3 rounded-full border border-white/10" />
-
-                    <div ref={iconRef} className="grid place-items-center">
-                      <ActiveIcon
-                        size={58}
-                        strokeWidth={1}
-                        className="text-white sm:size-[70px]"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* FLOATING LABEL */}
-                <span className="absolute top-3 right-0 [transform:translateZ(40px)] font-sans text-[10px] tracking-[0.16em] text-[#8db8ee] uppercase sm:right-5">
-                  Analytical Framework
+            {/* NAVIGATION */}
+            <div className="relative mt-6 border-t border-white/10 pt-5">
+              <div className="mb-4 flex items-center justify-between gap-2">
+                <span className="text-[10px] font-semibold tracking-[0.15em] text-[#88a5cb] uppercase">
+                  Explore Methods
                 </span>
-              </div>
 
-              {/* SIGNAL TRACE */}
-              <div className="relative mb-6 [transform:translateZ(35px)]">
-                <div className="mb-2 flex items-center justify-between font-sans text-[10px] tracking-[0.15em] text-white/45 uppercase">
-                  <span>Signal Trace</span>
-                  <span className="text-[#8cbcff]">Illustrative</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => selectStep(activeIndex - 1)}
+                    aria-label="Previous checkpoint"
+                    className="grid size-9 place-items-center rounded-full border border-white/15 text-white/75 transition-all hover:border-[#92c5ff] hover:text-white"
+                  >
+                    <ArrowLeft size={16} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => selectStep(activeIndex + 1)}
+                    aria-label="Next checkpoint"
+                    className="grid size-9 place-items-center rounded-full border border-white/15 text-white/75 transition-all hover:border-[#92c5ff] hover:text-white"
+                  >
+                    <ArrowRight size={16} />
+                  </button>
                 </div>
-
-                <svg
-                  viewBox="0 0 300 56"
-                  preserveAspectRatio="none"
-                  className="h-14 w-full overflow-visible"
-                  aria-hidden="true"
-                >
-                  <defs>
-                    <linearGradient id="rs-area" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="0%"
-                        stopColor="#8cbcff"
-                        stopOpacity="0.35"
-                      />
-                      <stop offset="100%" stopColor="#8cbcff" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-
-                  <line
-                    x1="0"
-                    x2="300"
-                    y1={BASE}
-                    y2={BASE}
-                    stroke="rgba(255,255,255,0.18)"
-                    strokeWidth="0.6"
-                  />
-
-                  <path
-                    key={`a-${activeIndex}`}
-                    d={`${tracePath} L300,56 L0,56 Z`}
-                    fill="url(#rs-area)"
-                    style={
-                      reduced
-                        ? undefined
-                        : { animation: "rs-fade 1.2s ease-out 0.5s both" }
-                    }
-                  />
-
-                  <path
-                    key={`l-${activeIndex}`}
-                    d={tracePath}
-                    fill="none"
-                    stroke="#9fd0ff"
-                    strokeWidth="1.6"
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                    pathLength="1"
-                    style={
-                      reduced
-                        ? undefined
-                        : {
-                            strokeDasharray: 1,
-                            strokeDashoffset: 1,
-                            animation:
-                              "rs-draw 1.4s cubic-bezier(0.22,1,0.36,1) forwards",
-                          }
-                    }
-                  />
-                </svg>
               </div>
+            </div>
 
-              {/* DYNAMIC INFORMATION */}
-              <div
-                aria-live="polite"
-                className="relative [transform:translateZ(45px)]"
+            {/* PANEL FOOTER */}
+            <div className="relative mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-5">
+              <span className="text-[11px] text-[#8ca8cc]">
+                Analytical Methods
+              </span>
+
+              <a
+                href="#shop"
+                className="group inline-flex items-center gap-2 text-[12px] font-semibold text-[#a5d0ff] transition-colors hover:text-white"
               >
-                <div ref={infoRef}>
-                  <h3 className="font-heading text-[clamp(32px,3.5vw,52px)] leading-[1.08] font-semibold tracking-[-0.04em]">
-                    {active.title}
-                  </h3>
-
-                  <p className="mt-4 max-w-[510px] font-sans text-[15px] leading-[1.8] text-[#c5d7ef] sm:text-[16px]">
-                    {active.description}
-                  </p>
-
-                  <div className="mt-7 grid gap-3 border-t border-white/15 pt-6 sm:grid-cols-2">
-                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-3">
-                      <div className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/15 bg-white/10">
-                        <ScanLine size={20} strokeWidth={1.5} />
-                      </div>
-
-                      <div className="min-w-0">
-                        <span className="block font-sans text-[10px] tracking-[0.15em] text-white/45 uppercase">
-                          Analytical Approach
-                        </span>
-                        <span className="mt-1 block font-sans text-[14px] font-medium text-white">
-                          {active.method}
-                        </span>
-                      </div>
-                    </div>
-
-                    {active.output && (
-                      <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-3">
-                        <div className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/15 bg-white/10">
-                          <FileCheck2 size={20} strokeWidth={1.5} />
-                        </div>
-
-                        <div className="min-w-0">
-                          <span className="block font-sans text-[10px] tracking-[0.15em] text-white/45 uppercase">
-                            What The Report Shows
-                          </span>
-                          <span className="mt-1 block font-sans text-[14px] font-medium text-white">
-                            {active.output}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+                Explore Products
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                />
+              </a>
             </div>
-          </div>
-        </div>
-
-        {/* BOTTOM STATEMENT */}
-        <div
-          data-aos="fade-up"
-          className="mt-10 flex flex-col items-start justify-between gap-5 border-t border-[#dce5ef] pt-7 sm:flex-row sm:items-center"
-        >
-          <div className="flex items-center gap-3">
-            <div className="text-primary grid size-10 shrink-0 place-items-center rounded-full bg-[#e7f1fc]">
-              <FlaskConical size={19} strokeWidth={1.6} />
-            </div>
-
-            <p className="max-w-[620px] font-sans text-[14px] leading-relaxed text-[#64748b] sm:text-[15px]">
-              Understanding what a laboratory report measures is just as
-              important as understanding its results.
-            </p>
-          </div>
-
-          <span className="text-primary inline-flex items-center gap-2 font-sans text-[12px] font-semibold tracking-[0.1em] whitespace-nowrap uppercase">
-            Research Use Only
-            <ArrowRight size={17} />
-          </span>
+          </aside>
         </div>
       </div>
     </section>

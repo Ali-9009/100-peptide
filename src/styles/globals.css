@@ -70,3 +70,56 @@
     transition: none;
   }
 }
+
+
+/* Why Choose Us — staggered card pop */
+
+#why [data-aos="zoom-in-up"] {
+  opacity: 0;
+  transform: translateY(45px) scale(0.88);
+}
+
+#why [data-aos="zoom-in-up"].aos-animate {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #why [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* =====================================
+   GLOBAL FLOATING ANIMATION
+===================================== */
+
+@keyframes iconFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.icon-float {
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+/* Pause animation on hover */
+.icon-float:hover {
+  animation-play-state: paused;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .icon-float {
+    animation: none;
+  }
+}

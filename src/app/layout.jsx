@@ -5,7 +5,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 export const metadata = {
-  title: "Peptide Skincare | Science Meets Luxury",
+  title: "100 Peptide | Research Peptides",
   description:
     "Discover advanced peptide skincare designed to nourish, restore, and elevate your everyday skincare routine.",
 };

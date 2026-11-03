@@ -6,6 +6,9 @@ import WhyChooseUs from "./components/WhyChooseUs";
 import ResearchStandards from "./components/ResearchStandards";
 import OrderProcess from "./components/OrderProcess";
 import OrderCTA from "./components/OrderCTA";
+import FAQ from "./components/FAQ";
+import ProductOrbit from "./components/ProductOrbit";
+import ShippingMap from "./components/ShippingMap";
 export default function HomePage() {
   return (
     <>
@@ -16,7 +19,7 @@ export default function HomePage() {
           {/* SECTION HEADING */}
           <div className="mb-12 text-center" data-aos="fade-up">
             {/* HEADING */}
-            <h2 className="font-heading text-primary text-[clamp(36px,5vw,68px)] leading-[1.1] font-semibold tracking-[-0.045em]">
+            <h2 className="font-heading text-primary text-[clamp(32px,4vw,52px)] leading-[1.05] font-semibold tracking-[-0.05em]">
               Precision in Every Peptide.
             </h2>
 
@@ -41,6 +44,12 @@ export default function HomePage() {
       <ResearchStandards />
 
       <OrderProcess />
+
+      <ProductOrbit />
+
+      <FAQ />
+
+      <ShippingMap />
 
       <OrderCTA />
     </>
