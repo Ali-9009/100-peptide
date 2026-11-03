@@ -15,13 +15,16 @@ import {
   FlaskConical,
 } from "lucide-react";
 
+import CartButton from "@/components/cart/CartButton";
+
 const LINKS = [
-  { label: "Shop", href: "#shop" },
-  { label: "Why Us", href: "#why" },
-  { label: "How It Works", href: "#how" },
-  { label: "Our Brand", href: "#brand" },
-  { label: "Shipping", href: "#map" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Shop", href: "/shop" },
+  { label: "COA", href: "/coa" },
+  { label: "About", href: "/about" },
+  { label: "FAQs", href: "/faqs" },
+  { label: "Contact", href: "/contact" },
+  { label: "Partner Program", href: "/partner-program" },
+  { label: "Track Order", href: "/track-order" },
 ];
 
 const ease = "ease-[cubic-bezier(0.22,1,0.36,1)]";
@@ -158,12 +161,8 @@ export default function Header({
               icon={Heart}
             />
 
-            <IconButton
-              label="Open cart"
-              count={cartCount}
-              onClick={onCartClick}
-              icon={ShoppingBag}
-            />
+
+            <CartButton />
 
             <button
               ref={menuButtonRef}
@@ -278,17 +277,7 @@ export default function Header({
               Wishlist ({wishCount})
             </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                closeMenu();
-                onCartClick?.();
-              }}
-              className="text-primary flex items-center justify-center gap-2 rounded-xl border border-[#e6eaf1] px-3 py-3.5 text-xs font-semibold transition-colors duration-300 hover:bg-[#f0f4fa]"
-            >
-              <ShoppingBag size={17} strokeWidth={1.7} />
-              Cart ({cartCount})
-            </button>
+            <CartButton />
           </div>
 
           {/* PROMOTION */}

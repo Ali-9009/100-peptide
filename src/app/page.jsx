@@ -1,18 +1,21 @@
 import Link from "next/link";
-import Hero from "./components/Hero";
-import ProductCard from "./components/ProductCard";
+import Hero from "@/components/Hero";
+import ProductCard from "@/components/ProductCard";
 import { products } from "@/data/products";
-import WhyChooseUs from "./components/WhyChooseUs";
-import ResearchStandards from "./components/ResearchStandards";
-import OrderProcess from "./components/OrderProcess";
-import OrderCTA from "./components/OrderCTA";
-import FAQ from "./components/FAQ";
-import ProductOrbit from "./components/ProductOrbit";
-import ShippingMap from "./components/ShippingMap";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import ResearchStandards from "@/components/ResearchStandards";
+import OrderProcess from "@/components/OrderProcess";
+import OrderCTA from "@/components/OrderCTA";
+import FAQ from "@/components/FAQ";
+import ProductOrbit from "@/components/ProductOrbit";
+import ShippingMap from "@/components/ShippingMap";
+import ResearchMarquee from "@/components/ResearchMarquee";
 export default function HomePage() {
   return (
     <>
       <Hero />
+
+      <ResearchMarquee />
 
       <section id="shop" className="bg-white px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">

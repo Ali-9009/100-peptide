@@ -27,25 +27,24 @@ const footerLinks = [
   {
     title: "Explore",
     links: [
-      { label: "Shop All Peptides", href: "#shop" },
-      { label: "Research Bundles", href: "#bundles" },
-      { label: "Why Choose Us", href: "#why" },
-      { label: "How It Works", href: "#how" },
+      { label: "Shop All Peptides", href: "/shop" },
+      { label: "COA", href: "/coa" },
+      { label: "Partner Program", href: "/partner-program" },
+      { label: "Track Order", href: "/track-order" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "Our Story", href: "#brand" },
-      { label: "Research Standards", href: "#research-standards" },
+      { label: "About", href: "/about" },
+      { label: "FAQs", href: "/faqs" },
       { label: "Contact Us", href: "/contact" },
     ],
   },
   {
     title: "Support",
     links: [
-      { label: "Shipping Information", href: "#map" },
-      { label: "Frequently Asked Questions", href: "#faq" },
+      { label: "Shipping Information", href: "/shipping-information" },
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms & Conditions", href: "/terms" },
     ],

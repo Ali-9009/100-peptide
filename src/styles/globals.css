@@ -123,3 +123,30 @@
     animation: none;
   }
 }
+
+
+
+.tracking-truck-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.tracking-truck-marker {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #0b1b3f;
+  box-shadow: 0 10px 30px rgba(11, 27, 63, 0.25);
+}
+
+.tracking-truck-marker span {
+  font-size: 25px;
+  line-height: 1;
+}
+
+.leaflet-container {
+  font-family: inherit;
+}

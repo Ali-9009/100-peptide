@@ -1,0 +1,13 @@
+@keyframes supportFloat { 0%,100% { transform:translate3d(0,0,0) } 50% { transform:translate3d(0,-16px,0) } }
+@keyframes supportFloatAlt { 0%,100% { transform:translate3d(0,0,0) rotate(14deg) } 50% { transform:translate3d(-6px,12px,0) rotate(9deg) } }
+@keyframes supportPulse { 0%,100% { box-shadow:0 0 0 0 rgba(57,127,206,.32) } 65% { box-shadow:0 0 0 13px rgba(57,127,206,0) } }
+@keyframes supportSweep { 0% { transform:translateX(-100%) } 100% { transform:translateX(220%) } }
+@keyframes supportReveal { from { opacity:0;transform:translateY(16px) } to { opacity:1;transform:translateY(0) } }
+.support-bottle-float { animation:supportFloat 5.5s ease-in-out infinite }
+.support-bottle-float-alt { animation:supportFloatAlt 6.1s ease-in-out infinite }
+.support-pulse { animation:supportPulse 2.6s ease-in-out infinite }
+.support-entrance { animation:supportReveal .8s ease-out both }
+.support-mapline { stroke-dasharray:7 10; animation:supportDash 19s linear infinite }
+@keyframes supportDash { to { stroke-dashoffset:-340 } }
+.support-shine::before { content:"";position:absolute;inset:0;width:52%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:translateX(-130%);animation:supportSweep 7s ease-in-out infinite;pointer-events:none }
+@media (prefers-reduced-motion:reduce) { .support-bottle-float,.support-bottle-float-alt,.support-pulse,.support-entrance,.support-mapline,.support-shine::before { animation:none!important } }

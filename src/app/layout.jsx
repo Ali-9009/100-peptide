@@ -1,8 +1,10 @@
 import "@/styles/globals.css";
 
+import "leaflet/dist/leaflet.css";
 import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import CartShell from "@/components/cart/CartShell";
 
 export const metadata = {
   title: "100 Peptide | Research Peptides",
@@ -26,9 +28,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
       <body className="antialiased">
-        <Header />
-        {children}
-        <Footer />
+        <CartShell>
+          <Header />
+          {children}
+          <Footer />
+        </CartShell>
       </body>
     </html>
   );

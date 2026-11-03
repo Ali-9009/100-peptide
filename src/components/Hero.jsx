@@ -16,6 +16,8 @@ import {
 
 import Button from "./Button";
 
+import { getProductBySlug } from "@/data/products";
+
 // ============================================
 // SLIDER DATA
 // ============================================
@@ -31,7 +33,7 @@ const slides = [
     imageAlt: "BPC-157 research peptide vial",
     productName: "BPC-157",
     productLabel: "Research Peptide",
-    href: "#shop",
+    href: `/products/${getProductBySlug("bpc-157")?.slug}`,
 
     gradient:
       "linear-gradient(115deg, #4F8FD9 0%, #68A5E8 40%, #86BAF0 75%, #A2CEFA 100%)",
@@ -46,10 +48,10 @@ const slides = [
     imageAlt: "TB-500 research peptide vial",
     productName: "TB-500",
     productLabel: "Laboratory Research",
-    href: "#shop",
+    href: `/products/${getProductBySlug("tb-500")?.slug}`,
 
     gradient:
-  "linear-gradient(115deg, #326BB5 0%, #4D89CE 40%, #71A5E2 75%, #94C0F0 100%)",
+      "linear-gradient(115deg, #326BB5 0%, #4D89CE 40%, #71A5E2 75%, #94C0F0 100%)",
   },
   {
     id: "ghk-cu",
@@ -61,10 +63,10 @@ const slides = [
     imageAlt: "GHK-Cu copper peptide vial",
     productName: "GHK-Cu",
     productLabel: "Copper Peptide",
-    href: "#shop",
+    href: `/products/${getProductBySlug("ghk-cu")?.slug}`,
 
     gradient:
-  "linear-gradient(115deg, #4384C7 0%, #5D9DDF 40%, #7BB4EC 75%, #9BC9F5 100%)",
+      "linear-gradient(115deg, #4384C7 0%, #5D9DDF 40%, #7BB4EC 75%, #9BC9F5 100%)",
   },
 ];
 
@@ -80,7 +82,7 @@ const researchers = [
   {
     name: "Researcher 3",
     image: "/assets/profile-3.avif",
-  },
+  },  
 ];
 
 const AUTOPLAY_DELAY = 4000;
@@ -428,7 +430,7 @@ export default function Hero() {
             <div ref={eyebrowRef} className="mb-4 flex items-center gap-2">
               <Sparkles size={17} className="text-primary shrink-0" />
 
-              <span className="text-white/70 font-sans text-xs font-semibold tracking-[0.16em] uppercase">
+              <span className="font-sans text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">
                 {activeSlide.eyebrow}
               </span>
             </div>
@@ -436,7 +438,7 @@ export default function Hero() {
             {/* DESCRIPTION */}
             <p
               ref={descriptionRef}
-              className="text-white max-w-[425px] font-sans text-[16px] leading-[1.65] font-medium sm:text-[18px] lg:text-[20px]"
+              className="max-w-[425px] font-sans text-[16px] leading-[1.65] font-medium text-white sm:text-[18px] lg:text-[20px]"
             >
               {activeSlide.description}
             </p>

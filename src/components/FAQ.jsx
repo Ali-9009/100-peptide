@@ -340,48 +340,6 @@ export default function FAQ() {
                 ANIMATED QUESTION MARK
             ===================================== */}
 
-            <div
-              ref={visualRef}
-              aria-hidden="true"
-              className="relative mt-6 hidden h-[210px] w-full max-w-[440px] items-center justify-center lg:flex xl:mt-8 xl:h-[245px]"
-            >
-              {/* SOFT GLOW */}
-              <div className="absolute size-[220px] rounded-full bg-[radial-gradient(circle,#c9e5ff_0%,#eaf5ff_55%,transparent_75%)] blur-[10px]" />
-
-              {/* OUTER ORBIT */}
-              <div
-                ref={orbitRef}
-                className="absolute size-[200px] rounded-full border border-dashed border-[#85b9e7]/45 xl:size-[240px]"
-              >
-                <span className="absolute top-1/2 -left-1.5 size-3 rounded-full bg-[#397fce] shadow-[0_0_20px_rgba(57,127,206,0.55)]" />
-              </div>
-
-              {/* INNER ORBIT */}
-              <div className="absolute size-[155px] rounded-full border border-[#9ccaf2]/35 xl:size-[190px]" />
-
-              {/* FLOATING QUESTION MARK */}
-              <div
-                ref={questionRef}
-                className="to-primary relative z-10 flex size-[125px] items-center justify-center rounded-[35px] bg-gradient-to-br from-[#173a78] shadow-[0_25px_65px_rgba(11,27,63,0.28)] xl:size-[150px] xl:rounded-[40px]"
-              >
-                <span className="font-heading text-[105px] leading-none font-bold tracking-[-0.08em] text-white xl:text-[125px]">
-                  ?
-                </span>
-
-                {/* SMALL DOT */}
-                <span className="absolute -top-2 -right-2 size-6 rounded-full border-[5px] border-[#edf6ff] bg-[#5ab1ff]" />
-              </div>
-
-              {/* FLOATING LABELS */}
-              <div className="text-primary absolute top-2 left-3 rounded-full border border-[#d3e6f8] bg-white px-4 py-2 text-xs font-semibold shadow-[0_10px_30px_rgba(11,27,63,0.05)]">
-                Research
-              </div>
-
-              <div className="text-primary absolute right-0 bottom-6 rounded-full border border-[#d3e6f8] bg-white px-4 py-2 text-xs font-semibold shadow-[0_10px_30px_rgba(11,27,63,0.05)]">
-                Support
-              </div>
-            </div>
-
             {/* CONTACT LINK */}
             <div className="mt-6">
               <Link
