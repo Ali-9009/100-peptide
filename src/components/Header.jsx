@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 
 import CartButton from "@/components/cart/CartButton";
+import HeaderSearch from "@/components/HeaderSearch";
+import AdminButton from "./AdminButton";
 
 const LINKS = [
   { label: "Shop", href: "/shop" },
@@ -153,16 +155,11 @@ export default function Header({
 
           {/* ACTIONS */}
           <div className="flex items-center justify-end gap-1.5 sm:gap-2">
-            <IconButton
-              label="Open wishlist"
-              count={wishCount}
-              onClick={onWishClick}
-              className="hidden sm:grid"
-              icon={Heart}
-            />
-
+            <HeaderSearch />
 
             <CartButton />
+
+            <AdminButton />
 
             <button
               ref={menuButtonRef}
@@ -264,21 +261,10 @@ export default function Header({
           </nav>
 
           {/* QUICK ACTIONS */}
-          <div className="mt-7 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                closeMenu();
-                onWishClick?.();
-              }}
-              className="text-primary flex items-center justify-center gap-2 rounded-xl border border-[#e6eaf1] px-3 py-3.5 text-xs font-semibold transition-colors duration-300 hover:bg-[#f0f4fa]"
-            >
-              <Heart size={17} strokeWidth={1.7} />
-              Wishlist ({wishCount})
-            </button>
+          {/* <div className="mt-7 grid grid-cols-2 gap-3">
 
             <CartButton />
-          </div>
+          </div> */}
 
           {/* PROMOTION */}
           <div className="bg-primary relative mt-7 overflow-hidden rounded-2xl p-6 text-white">
@@ -317,24 +303,5 @@ export default function Header({
         </div>
       </aside>
     </>
-  );
-}
-
-function IconButton({ label, count = 0, onClick, icon: Icon, className = "" }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={`${label}${count > 0 ? `, ${count} items` : ""}`}
-      className={`text-primary relative grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#eef2f8] transition-[background-color,color,transform] duration-300 ${ease} hover:bg-primary hover:text-white active:scale-95 sm:h-11 sm:w-11 ${className} `}
-    >
-      <Icon size={19} strokeWidth={1.7} />
-
-      {count > 0 && (
-        <span className="bg-primary absolute -top-1 -right-1 grid h-[19px] min-w-[19px] place-items-center rounded-full border-2 border-white px-0.5 text-[9px] font-bold text-white">
-          {count > 99 ? "99+" : count}
-        </span>
-      )}
-    </button>
   );
 }

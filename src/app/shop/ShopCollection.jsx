@@ -554,14 +554,11 @@ export default function ShopCollection() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* ============================================
-          SHOP HERO
-      ============================================ */}
-
+    <main className="min-h-screen">
+      {/* SHOP HERO */}
       <section
         aria-labelledby="shop-heading"
-        className="relative isolate overflow-hidden bg-[#d4e9fa] px-5 pt-20 pb-16 sm:px-8 lg:pt-34 lg:pb-20"
+        className="relative isolate overflow-hidden bg-[#d4e9fa] px-5 pt-28 pb-16 sm:px-8 lg:pt-34 lg:pb-20"
       >
         {/* GRADIENT */}
         <div
@@ -672,10 +669,7 @@ export default function ShopCollection() {
         </div>
       </section>
 
-      {/* ============================================
-          PRODUCT COLLECTION
-      ============================================ */}
-
+      {/* PRODUCT COLLECTION */}
       <section
         id="shop-products"
         aria-label="Research products"

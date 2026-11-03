@@ -92,11 +92,11 @@ export default function CartDrawer() {
           </button>
         </header>
 
-        <div className="grid min-h-0 flex-1 grid-cols-[116px_minmax(0,1fr)] sm:grid-cols-[170px_minmax(0,1fr)]">
+        <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[170px_minmax(0,1fr)]">
           {/* Independent scrollable suggestion rail, inspired by the reference. */}
           <aside
             aria-label="Also available"
-            className="min-h-0 overflow-y-auto border-r border-[#e9eff5] bg-[#f5f8fc] p-2.5 sm:p-3.5"
+            className="hidden min-h-0 overflow-y-auto border-r border-[#e9eff5] bg-[#f5f8fc] p-3.5 lg:block"
           >
             <p className="mb-3 px-1 text-[11px] font-bold text-[#0b1b3f]">
               Also available

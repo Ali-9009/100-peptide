@@ -107,11 +107,6 @@ function ScatteredCard({ feature, index }) {
 
   return (
     <article className="group/card relative flex h-full min-h-[235px] flex-col overflow-hidden rounded-[24px] border border-[#d7e6f4] bg-white p-6 shadow-[0_15px_35px_rgba(11,27,63,0.10)] transition-[box-shadow,border-color] duration-500 hover:border-[#9ac7ef] hover:shadow-[0_30px_70px_rgba(11,27,63,0.20)] sm:p-7">
-      {/* CARD NUMBER */}
-      <span className="font-heading absolute top-6 right-6 text-[13px] font-bold text-[#a9c3dd]">
-        {String(index + 1).padStart(2, "0")}
-      </span>
-
       {/* ICON */}
       <div className="relative z-10 grid size-14 place-items-center rounded-2xl bg-[#edf6ff] text-[#397fce] transition-all duration-500 group-hover/card:scale-110 group-hover/card:bg-[#0b1b3f] group-hover/card:text-white">
         <Icon size={27} strokeWidth={1.6} />

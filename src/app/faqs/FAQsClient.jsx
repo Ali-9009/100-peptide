@@ -45,7 +45,7 @@ export default function FAQsClient() {
     [activeCategory, query],
   );
   return (
-    <main className="min-h-svh px-4 pt-24 pb-20 sm:px-8 sm:pt-32">
+    <main className="min-h-svh px-4 pt-28 pb-20 sm:px-8 sm:pt-32">
       <div className="mx-auto max-w-7xl">
         <section className="grid gap-9 lg:grid-cols-[280px_1fr] lg:gap-14">
           <aside className="lg:sticky lg:top-28 lg:self-start">

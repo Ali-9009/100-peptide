@@ -184,15 +184,6 @@ export default function OrderProcess() {
                     <Icon size={25} strokeWidth={1.7} />
                   </span>
 
-                  {/* NUMBER */}
-                  <span
-                    className={`font-heading absolute top-6 right-6 text-[20px] font-semibold transition-colors duration-700 ${
-                      isActive ? "text-[#397fce]/50" : "text-slate-300"
-                    }`}
-                  >
-                    {step.number}
-                  </span>
-
                   {/* TITLE */}
                   <h3
                     className={`font-heading mt-6 text-[21px] leading-[1.15] font-semibold tracking-[-0.03em] transition-colors duration-700 ${

@@ -201,7 +201,7 @@ export default function TrackOrderClient() {
   }
   const current = demo ? example : result;
   return (
-    <main className="min-h-svh overflow-hidden px-4 pt-24 pb-20 sm:px-8 sm:pt-32">
+    <main className="min-h-svh overflow-hidden px-4 pt-28 pb-20 sm:px-8 sm:pt-32">
       <div className="mx-auto max-w-7xl">
         <section
           className="grid items-start gap-5 lg:grid-cols-[.77fr_1.23fr]"

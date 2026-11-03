@@ -215,25 +215,38 @@ function ProductGallery({ product }) {
 function PurchasePanel({ product }) {
   const { addItem } = useCart();
   const [variantIndex, setVariantIndex] = useState(product.defaultVariant ?? 0);
-  const [packCount, setPackCount] = useState(1);
+  // null means the customer hasn't selected a bundle.
+  const [packCount, setPackCount] = useState(null);
   const [packSets, setPackSets] = useState(1);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
   const variant = product.variants?.[variantIndex] || product.variants?.[0];
+
+  // Only select a pack when the customer explicitly chooses one.
   const pack =
-    PACK_OPTIONS.find((option) => option.quantity === packCount) ||
-    PACK_OPTIONS[0];
-  const totalBeforeDiscount = roundMoney((variant?.price || 0) * pack.quantity);
-  const pricePerPack = getPackPrice(
-    variant?.price || 0,
-    pack.quantity,
-    pack.discountPercent,
-  );
+    packCount === null
+      ? null
+      : PACK_OPTIONS.find((option) => option.quantity === packCount) || null;
+
+  // Default is always one vial.
+  const vialCount = pack?.quantity ?? 1;
+
+  const discountPercent = pack?.discountPercent ?? 0;
+
+  const totalBeforeDiscount = roundMoney((variant?.price || 0) * vialCount);
+
+  const pricePerPack = pack
+    ? getPackPrice(variant?.price || 0, vialCount, discountPercent)
+    : roundMoney(variant?.price || 0);
+
   const savings = roundMoney(totalBeforeDiscount - pricePerPack);
+
   const grandTotal = roundMoney(pricePerPack * packSets);
+
   const maxPacks =
-    variant?.stock == null ? 99 : Math.floor(variant.stock / packCount);
+    variant?.stock == null ? 99 : Math.floor(variant.stock / vialCount);
+
   const canBuy = Boolean(variant?.inStock) && maxPacks >= 1;
 
   useEffect(() => {
@@ -243,22 +256,33 @@ function PurchasePanel({ product }) {
 
   const addToCart = () => {
     if (!canBuy || busy) return;
+
     setBusy(true);
     setMessage("");
+
     try {
-      // One cart unit is one complete pack. No changes to CartContext required.
-      // Distinct IDs keep the same strength's different pack sizes separate.
+      // DEFAULT: Add normal individual vials.
+      if (!pack) {
+        addItem(product, variant, packSets);
+        return;
+      }
+
+      // OPTIONAL: Customer explicitly selected a multi-vial pack.
       const packVariant = {
         ...variant,
         id: `${variant.id}-pack-${pack.quantity}`,
-        label: `${variant.label} · ${pack.label}${pack.discountPercent ? ` · Save ${pack.discountPercent}%` : ""}`,
+        label: `${variant.label} · ${pack.label}${
+          pack.discountPercent ? ` · Save ${pack.discountPercent}%` : ""
+        }`,
         price: pricePerPack,
         stock: maxPacks,
         inStock: canBuy,
       };
-      addItem(product, packVariant, packSets); // Existing context automatically opens drawer.
+
+      // One cart line represents one selected pack.
+      addItem(product, packVariant, packSets);
     } catch (error) {
-      setMessage(error?.message || "Unable to add this pack to the cart.");
+      setMessage(error?.message || "Unable to add this item to the cart.");
     } finally {
       setBusy(false);
     }
@@ -379,8 +403,8 @@ function PurchasePanel({ product }) {
               Number of packs
             </p>
             <p className="mt-0.5 text-sm text-[#899caf]">
-              {packSets * packCount} total{" "}
-              {packSets * packCount === 1 ? "vial" : "vials"}
+              {packSets * vialCount} total{" "}
+              {packSets * vialCount === 1 ? "vial" : "vials"}
             </p>
           </div>
           <div className="flex h-11 items-center overflow-hidden rounded-full border border-[#dce7f2] bg-white">
@@ -568,7 +592,7 @@ export default function ProductDetailClient({ product, related = [] }) {
     coaUrl: null,
   };
   return (
-    <main className="min-h-svh bg-[#f8fbff] px-4 pt-24 pb-20 sm:px-8 sm:pt-32">
+    <main className="min-h-svh bg-[linear-gradient(to_bottom,#f7faff_0%,#ffffff_100%)] px-4 pt-28 pb-20 sm:px-8 sm:pt-32">
       <div className="mx-auto max-w-7xl">
         <nav
           aria-label="Breadcrumb"

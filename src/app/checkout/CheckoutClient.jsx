@@ -180,7 +180,7 @@ export default function CheckoutClient() {
   const canContinue = hydrated && items.length > 0;
 
   return (
-    <main className="min-h-svh bg-[#f6faff] px-4 pt-24 pb-20 sm:px-8 sm:pt-32">
+    <main className="min-h-svh bg-[linear-gradient(to_bottom,#f7faff_0%,#ffffff_100%)] px-4 pt-28 pb-20 sm:px-8 sm:pt-32">
       <div className="mx-auto max-w-7xl">
         <nav
           aria-label="Breadcrumb"

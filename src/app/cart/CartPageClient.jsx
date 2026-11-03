@@ -9,7 +9,7 @@ import FreeShippingProgress from "@/components/cart/FreeShippingProgress";
 export default function CartPageClient() {
   const { items, itemCount, subtotal, hydrated } = useCart();
   return (
-    <main className="min-h-svh bg-[#f7faff] px-4 pt-24 pb-20 sm:px-8 sm:pt-32">
+    <main className="min-h-svh bg-[linear-gradient(to_bottom,#f7faff_0%,#ffffff_100%)] px-4 pt-28 pb-20 sm:px-8 sm:pt-32">
       <div className="mx-auto max-w-7xl">
         <nav aria-label="Breadcrumb" className="mb-7 text-xs text-[#7d8fa7]">
           <Link href="/" className="hover:text-[#397fce]">

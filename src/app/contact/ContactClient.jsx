@@ -180,9 +180,8 @@ export default function ContactClient() {
   }
 
   return (
-    <main className="min-h-svh overflow-hidden px-4 pt-24 pb-20 sm:px-8 sm:pt-32">
+    <main className="min-h-svh overflow-hidden px-4 pt-28 pb-20 sm:px-8 sm:pt-32">
       <div className="mx-auto max-w-7xl">
-        
         <section className="support-entrance relative isolate min-h-[520px] overflow-hidden rounded-3xl bg-[#0b1b3f] sm:min-h-[580px] lg:min-h-[620px]">
           {/* BACKGROUND IMAGE */}
           <div
