@@ -34,7 +34,7 @@ const slides = [
     href: "#shop",
 
     gradient:
-      "linear-gradient(115deg, #dcecff 0%, #b9dbff 40%, #95c4f5 75%, #79aee8 100%)",
+      "linear-gradient(115deg, #4F8FD9 0%, #68A5E8 40%, #86BAF0 75%, #A2CEFA 100%)",
   },
   {
     id: "tb-500",
@@ -49,7 +49,7 @@ const slides = [
     href: "#shop",
 
     gradient:
-      "linear-gradient(115deg, #dcecff 0%, #b9dbff 40%, #95c4f5 75%, #79aee8 100%)",
+  "linear-gradient(115deg, #326BB5 0%, #4D89CE 40%, #71A5E2 75%, #94C0F0 100%)",
   },
   {
     id: "ghk-cu",
@@ -64,7 +64,7 @@ const slides = [
     href: "#shop",
 
     gradient:
-      "linear-gradient(115deg, #dcecff 0%, #b9dbff 40%, #95c4f5 75%, #79aee8 100%)",
+  "linear-gradient(115deg, #4384C7 0%, #5D9DDF 40%, #7BB4EC 75%, #9BC9F5 100%)",
   },
 ];
 
@@ -428,7 +428,7 @@ export default function Hero() {
             <div ref={eyebrowRef} className="mb-4 flex items-center gap-2">
               <Sparkles size={17} className="text-primary shrink-0" />
 
-              <span className="text-primary font-sans text-xs font-semibold tracking-[0.16em] uppercase">
+              <span className="text-white/70 font-sans text-xs font-semibold tracking-[0.16em] uppercase">
                 {activeSlide.eyebrow}
               </span>
             </div>
@@ -436,7 +436,7 @@ export default function Hero() {
             {/* DESCRIPTION */}
             <p
               ref={descriptionRef}
-              className="text-text max-w-[425px] font-sans text-[16px] leading-[1.65] font-medium sm:text-[18px] lg:text-[20px]"
+              className="text-white max-w-[425px] font-sans text-[16px] leading-[1.65] font-medium sm:text-[18px] lg:text-[20px]"
             >
               {activeSlide.description}
             </p>

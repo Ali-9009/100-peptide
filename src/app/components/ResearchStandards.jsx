@@ -171,22 +171,6 @@ export default function ResearchStandards() {
             "-=0.65",
           );
 
-        // Continuous product float
-        gsap.to(productRef.current, {
-          y: -11,
-          rotation: 1.5,
-          duration: 3.8,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            toggleActions: "play pause resume pause",
-          },
-        });
-
         // Rotating orbit
         gsap.to(orbitRef.current, {
           rotation: 360,
@@ -200,6 +184,45 @@ export default function ResearchStandards() {
             toggleActions: "play pause resume pause",
           },
         });
+
+        // LEFT BOTTLE — MOVES UP AND DOWN
+        gsap.to("[data-bottle='left']", {
+          y: -18,
+          x: -4,
+          duration: 2.8,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            toggleActions: "play pause resume pause",
+          },
+        });
+
+        // RIGHT BOTTLE — MOVES INDEPENDENTLY
+        gsap.fromTo(
+          "[data-bottle='right']",
+          {
+            y: -14,
+            x: 4,
+          },
+          {
+            y: 12,
+            x: -3,
+            duration: 3.6,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              toggleActions: "play pause resume pause",
+            },
+          },
+        );
 
         // Subtle checkpoint movement
         gsap.utils.toArray("[data-point-inner]").forEach((element, index) => {
@@ -335,17 +358,43 @@ export default function ResearchStandards() {
                 PRODUCT — CENTERED
             ============================================ */}
 
+            {/* TWO INDEPENDENT FLOATING PRODUCTS */}
             <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-              <div className="h-[230px] w-[190px] sm:h-[310px] sm:w-[250px] md:h-[350px] md:w-[280px] lg:h-[min(48svh,430px)] lg:w-[min(30vw,340px)]">
-                <div ref={productRef} className="relative h-full w-full">
-                  <Image
-                    src="/assets/bpc-157.png"
-                    alt="BPC-157 research peptide vial"
-                    fill
-                    sizes="(max-width: 640px) 190px, (max-width: 1024px) 280px, 340px"
-                    className="object-contain drop-shadow-[0_30px_45px_rgba(0,0,0,0.45)]"
-                  />
+              <div
+                ref={productRef}
+                className="relative h-[260px] w-[290px] sm:h-[340px] sm:w-[420px] md:h-[390px] md:w-[480px] lg:h-[min(52svh,480px)] lg:w-[min(42vw,560px)]"
+              >
+                {/* LEFT PRODUCT — BPC-157 */}
+                <div className="absolute top-[7%] left-[10%] z-10 h-[90%] w-[58%] origin-bottom-right -rotate-[18deg] sm:left-[13%]">
+                  <div data-bottle="left" className="relative h-full w-full">
+                    <Image
+                      src="/assets/bpc-157.png"
+                      alt="BPC-157 research peptide vial"
+                      fill
+                      sizes="(max-width: 640px) 170px, (max-width: 1024px) 260px, 320px"
+                      className="object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.4)]"
+                    />
+                  </div>
                 </div>
+
+                {/* RIGHT PRODUCT — TB-500 */}
+                <div className="absolute top-[4%] right-[10%] z-20 h-[95%] w-[58%] origin-bottom-left rotate-[18deg] sm:right-[13%]">
+                  <div data-bottle="right" className="relative h-full w-full">
+                    <Image
+                      src="/assets/tb-500.png"
+                      alt="TB-500 research peptide vial"
+                      fill
+                      sizes="(max-width: 640px) 170px, (max-width: 1024px) 260px, 320px"
+                      className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.45)]"
+                    />
+                  </div>
+                </div>
+
+                {/* BACKGROUND GLOW */}
+                <div
+                  aria-hidden="true"
+                  className="absolute top-1/2 left-1/2 -z-10 h-[65%] w-[75%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#65a7ff]/15 blur-[55px]"
+                />
               </div>
             </div>
 
