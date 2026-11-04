@@ -352,7 +352,7 @@ function PurchasePanel({ product }) {
           <legend className="mb-3 text-sm font-semibold text-[#0b1b3f]">
             Choose your pack
           </legend>
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-3 gap-2.5">
             {PACK_OPTIONS.map((option) => {
               const selected = packCount === option.quantity;
               const affordable =
@@ -360,7 +360,15 @@ function PurchasePanel({ product }) {
               return (
                 <label
                   key={option.quantity}
-                  className={`relative cursor-pointer overflow-hidden rounded-[16px] border-2 px-2 py-3 text-center transition-all ${selected ? "border-[#397fce] bg-[#edf6ff] shadow-[0_4px_12px_rgba(57,127,206,0.1)]" : "border-[#e1eaf4] bg-white hover:border-[#9ac6ef]"} ${!affordable || !variant?.inStock ? "cursor-not-allowed opacity-40" : ""}`}
+                  className={`relative flex cursor-pointer flex-col items-center rounded-[16px] border-2 px-2 py-3 text-center transition-all ${
+                    selected
+                      ? "border-[#397fce] bg-[#edf6ff] shadow-[0_4px_12px_rgba(57,127,206,0.1)]"
+                      : "border-[#e1eaf4] bg-white hover:border-[#9ac6ef]"
+                  } ${
+                    !affordable || !variant?.inStock
+                      ? "cursor-not-allowed opacity-40"
+                      : ""
+                  }`}
                 >
                   <input
                     type="radio"
@@ -373,23 +381,22 @@ function PurchasePanel({ product }) {
                     }}
                     className="sr-only"
                   />
-                  {option.discountPercent > 0 && (
-                    <span className="absolute top-1.5 right-1.5 rounded-md bg-[#dceeff] px-1.5 py-1 text-[9px] font-extrabold text-[#2876bf]">
-                      -{option.discountPercent}%
-                    </span>
-                  )}
-                  <PackArtwork image={product.image} count={option.quantity} />
-                  <span className="font-heading block text-[14px] font-bold text-[#0b1b3f]">
-                    {option.label}
-                  </span>
-                  <span className="mt-1 block text-[11px] font-semibold text-[#357fc5]">
-                    {formatCartMoney(
-                      getPackPrice(
-                        variant?.price || 0,
-                        option.quantity,
-                        option.discountPercent,
-                      ),
+
+                  {/* DISCOUNT BADGE — NORMAL FLOW */}
+                  <div className="mb-3 flex min-h-[22px] w-full justify-center">
+                    {option.discountPercent > 0 && (
+                      <span className="inline-flex items-center rounded-full bg-[#dceeff] px-3 py-1 text-[10px] font-extrabold text-[#2876bf]">
+                        Save {option.discountPercent}%
+                      </span>
                     )}
+                  </div>
+
+                  {/* PRODUCT IMAGES */}
+                  <PackArtwork image={product.image} count={option.quantity} />
+
+                  {/* PACK NAME */}
+                  <span className="font-heading mt-2 block text-[14px] font-bold text-[#0b1b3f]">
+                    {option.label}
                   </span>
                 </label>
               );

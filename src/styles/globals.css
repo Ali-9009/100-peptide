@@ -71,6 +71,22 @@
   }
 }
 
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent sticky header from covering sections */
+[id] {
+  scroll-margin-top: 110px;
+}
+
+/* Respect accessibility preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
 
 /* Why Choose Us — staggered card pop */
 
@@ -91,7 +107,6 @@
     transition: none !important;
   }
 }
-
 
 /* =====================================
    GLOBAL FLOATING ANIMATION
@@ -124,8 +139,6 @@
   }
 }
 
-
-
 .tracking-truck-icon {
   background: transparent !important;
   border: none !important;
@@ -149,4 +162,195 @@
 
 .leaflet-container {
   font-family: inherit;
+}
+
+/* =====================================
+   PRODUCT ORBIT — SMOOTH FLOATING
+===================================== */
+
+@keyframes productOrbitFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-3deg);
+  }
+
+  50% {
+    transform: translate3d(0, -12px, 0) rotate(3deg);
+  }
+}
+
+.product-orbit-float {
+  animation: productOrbitFloat 5s ease-in-out infinite;
+  transform-origin: center bottom;
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-orbit-float {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* =====================================
+   SHOP HERO — ANIMATED SALES CHART
+===================================== */
+
+.shop-chart-line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: shopChartDraw 4s ease-in-out infinite;
+}
+
+@keyframes shopChartDraw {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0.4;
+  }
+
+  65%,
+  85% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 100;
+    opacity: 0.4;
+  }
+}
+
+.shop-chart-area {
+  animation: shopChartArea 4s ease-in-out infinite;
+}
+
+@keyframes shopChartArea {
+  0%,
+  15% {
+    opacity: 0;
+  }
+
+  65%,
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* FLOATING CHART */
+@keyframes shopChartFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.shop-chart-float {
+  animation: shopChartFloat 6s ease-in-out infinite;
+}
+
+/* FLOATING PRODUCT */
+@keyframes shopProductFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-14px) rotate(3deg);
+  }
+}
+
+.shop-product-float {
+  animation: shopProductFloat 5s ease-in-out infinite;
+}
+
+/* RUNNING SALES BADGE */
+@keyframes shopSalesMarquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.shop-sales-marquee {
+  animation: shopSalesMarquee 14s linear infinite;
+}
+
+/* ACCESSIBILITY */
+@media (prefers-reduced-motion: reduce) {
+  .shop-chart-line,
+  .shop-chart-area,
+  .shop-chart-float,
+  .shop-product-float,
+  .shop-sales-marquee {
+    animation: none !important;
+  }
+
+  .shop-chart-line {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  .shop-chart-area {
+    opacity: 1;
+  }
+}
+
+/* =====================================
+   BOTTLE SHOWCASE — FLOATING PRODUCT
+===================================== */
+
+@keyframes showcaseBottleFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg);
+  }
+
+  50% {
+    transform: translate3d(0, -12px, 0) rotate(2deg);
+  }
+}
+
+.showcase-bottle-float {
+  animation: showcaseBottleFloat 5s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+/* =====================================
+   CIRCULAR BADGE — SUBTLE FLOAT
+===================================== */
+
+@keyframes showcaseBadgeFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+.showcase-badge-float {
+  animation: showcaseBadgeFloat 6s ease-in-out infinite;
+}
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-bottle-float,
+  .showcase-badge-float {
+    animation: none;
+  }
 }

@@ -4,19 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 
-import {
-  ArrowLeft,
-  ArrowRight,
-  ShieldCheck,
-  Sparkles,
-  FlaskConical,
-  Pause,
-  Play,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, ShieldCheck } from "lucide-react";
 
 import Button from "./Button";
 
 import { getProductBySlug } from "@/data/products";
+import ResearchMarquee from "./ResearchMarquee";
 
 // ============================================
 // SLIDER DATA
@@ -82,7 +75,7 @@ const researchers = [
   {
     name: "Researcher 3",
     image: "/assets/profile-3.avif",
-  },  
+  },
 ];
 
 const AUTOPLAY_DELAY = 4000;
@@ -90,7 +83,6 @@ const AUTOPLAY_DELAY = 4000;
 export default function Hero() {
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
-  const eyebrowRef = useRef(null);
   const descriptionRef = useRef(null);
   const buttonRef = useRef(null);
   const socialRef = useRef(null);
@@ -99,7 +91,6 @@ export default function Hero() {
   const touchStartX = useRef(null);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(true);
   const [pageVisible, setPageVisible] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -153,7 +144,6 @@ export default function Hero() {
       headingRef.current,
       desktopProductRef.current,
       mobileProductRef.current,
-      eyebrowRef.current,
       descriptionRef.current,
       buttonRef.current,
       socialRef.current,
@@ -199,18 +189,6 @@ export default function Hero() {
           ease: "back.out(1.4)",
         },
         0.15,
-      );
-
-      // Eyebrow enters from left
-      tl.fromTo(
-        eyebrowRef.current,
-        { x: -70, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-        },
-        0.35,
       );
 
       // Description rises
@@ -262,8 +240,7 @@ export default function Hero() {
     return () => ctx.revert();
   }, [activeIndex, reducedMotion]);
 
-  // Autoplay — no mouse-hover pause
-  const shouldAutoplay = !paused && visible && pageVisible && !reducedMotion;
+  const shouldAutoplay = visible && pageVisible && !reducedMotion;
 
   useEffect(() => {
     if (!shouldAutoplay) return;
@@ -317,12 +294,6 @@ export default function Hero() {
       aria-label="Featured research peptides"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-          setPaused(false);
-        }
-      }}
       onKeyDown={(event) => {
         if (event.target.closest("a, button, input")) return;
 
@@ -359,6 +330,17 @@ export default function Hero() {
         aria-hidden="true"
         className="pointer-events-none absolute -top-[35%] right-[-15%] h-[850px] w-[850px] rounded-full bg-white/30 blur-[130px]"
       />
+
+      {/* RESEARCH MARQUEE */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
+      >
+        {/* DIAGONAL RUNNING RIBBON */}
+        <div className="absolute top-[43%] left-1/2 w-[170vw] -translate-x-1/2 -translate-y-1/2 -rotate-[12deg] sm:top-[46%] sm:w-[145vw] sm:-rotate-[10deg] lg:top-[53%] lg:w-[125vw] lg:-rotate-[9deg] lg:opacity-[0.68]">
+          <ResearchMarquee />
+        </div>
+      </div>
 
       <div
         aria-hidden="true"
@@ -426,15 +408,6 @@ export default function Hero() {
         <div className="relative z-30 mt-auto flex w-full flex-col items-start justify-between gap-8 pt-6 sm:flex-row sm:items-end lg:pt-0">
           {/* LEFT CONTENT */}
           <div className="w-full max-w-[425px]">
-            {/* EYEBROW */}
-            <div ref={eyebrowRef} className="mb-4 flex items-center gap-2">
-              <Sparkles size={17} className="text-primary shrink-0" />
-
-              <span className="font-sans text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">
-                {activeSlide.eyebrow}
-              </span>
-            </div>
-
             {/* DESCRIPTION */}
             <p
               ref={descriptionRef}
@@ -526,20 +499,6 @@ export default function Hero() {
                     strokeWidth={1.8}
                     className="transition-transform duration-300 group-hover:translate-x-0.5"
                   />
-                </button>
-
-                {/* PAUSE / PLAY */}
-                <button
-                  type="button"
-                  onClick={() => setPaused((current) => !current)}
-                  aria-label={paused ? "Play slideshow" : "Pause slideshow"}
-                  className="border-primary/20 text-primary hover:border-primary grid size-12 place-items-center rounded-full border bg-white/75 transition-all duration-300 hover:bg-white"
-                >
-                  {paused ? (
-                    <Play size={17} fill="currentColor" />
-                  ) : (
-                    <Pause size={17} fill="currentColor" />
-                  )}
                 </button>
               </div>
             </div>

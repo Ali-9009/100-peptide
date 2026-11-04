@@ -55,7 +55,7 @@ export default function AboutUsPage() {
   return (
     <main className="min-h-svh overflow-hidden px-4 pt-28 pb-20 sm:px-8 sm:pt-32">
       <div className="mx-auto max-w-7xl">
-        <section className="support-entrance relative isolate min-h-[520px] overflow-hidden rounded-3xl bg-[#0b1b3f] sm:min-h-[580px] lg:min-h-[620px]">
+        <section className="support-entrance relative isolate overflow-hidden rounded-3xl bg-[#0b1b3f]">
           {/* BACKGROUND IMAGE */}
           <div
             aria-hidden="true"
@@ -65,15 +65,15 @@ export default function AboutUsPage() {
           {/* DARK GRADIENT — LEFT SIDE ONLY */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 z-10 bg-gradient-to-r from-[#07152f]/90 via-[#07152f]/65 to-transparent"
+            className="absolute inset-0 z-10 bg-linear-to-r from-[#07152f]/90 via-[#07152f]/65 to-transparent"
           />
 
           {/* CONTENT */}
-          <div className="relative z-20 flex min-h-[520px] items-center px-6 py-16 sm:min-h-[580px] sm:px-12 lg:min-h-[620px] lg:px-16">
+          <div className="relative z-20 flex items-center px-6 py-16 sm:px-12 lg:px-16">
             <div className="max-w-[720px]">
               <Eyebrow light>Our perspective</Eyebrow>
 
-              <h1 className="font-heading mt-7 text-[clamp(50px,7vw,100px)] leading-[0.96] font-semibold tracking-[-0.075em] text-white">
+              <h1 className="font-heading mt-7 text-[clamp(43px,6vw,78px)] leading-[1.02] font-semibold tracking-[-0.065em] text-white">
                 Driven by
                 <br />
                 <span className="text-[#83c7ff]">discovery.</span>

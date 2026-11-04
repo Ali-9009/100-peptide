@@ -32,28 +32,36 @@ export default function QuickViewModal({ product, open, onClose }) {
     product?.defaultVariant ?? 0,
   );
 
-  const [selectedPackSize, setSelectedPackSize] = useState(1);
+  // null = no multipack selected (default: single vial)
+  const [selectedPackSize, setSelectedPackSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   const currentVariant = variants[selectedVariant] || variants[0];
 
+  // Only find a pack when the customer explicitly selects one.
   const selectedPack =
-    PACK_OPTIONS.find((pack) => pack.quantity === selectedPackSize) ||
-    PACK_OPTIONS[0];
+    selectedPackSize === null
+      ? null
+      : PACK_OPTIONS.find((pack) => pack.quantity === selectedPackSize) || null;
+
+  // Single vial by default
+  const vialCount = selectedPack?.quantity ?? 1;
 
   const unitPrice = Number(currentVariant?.price || 0);
 
-  const packPrice = getPackPrice(
-    unitPrice,
-    selectedPack.quantity,
-    selectedPack.discountPercent,
-  );
+  const packPrice = selectedPack
+    ? getPackPrice(
+        unitPrice,
+        selectedPack.quantity,
+        selectedPack.discountPercent,
+      )
+    : unitPrice;
 
   const totalPrice = packPrice * quantity;
 
   const availableStock = Number(currentVariant?.stock ?? Infinity);
 
-  const maxPacks = Math.floor(availableStock / selectedPack.quantity);
+  const maxPacks = Math.floor(availableStock / vialCount);
 
   const isAvailable =
     Boolean(currentVariant) &&
@@ -87,17 +95,26 @@ export default function QuickViewModal({ product, open, onClose }) {
   const handleAddToCart = () => {
     if (!isAvailable) return;
 
-    const cartVariant =
-      selectedPack.quantity === 1
-        ? currentVariant
-        : {
-            ...currentVariant,
-            id: `${currentVariant.id}-pack-${selectedPack.quantity}`,
-            label: `${currentVariant.label} · ${selectedPack.quantity} Vials · Save ${selectedPack.discountPercent}%`,
-            price: packPrice,
-            stock: maxPacks,
-            inStock: maxPacks > 0,
-          };
+    // Default: add individual vials using the original variant.
+    if (!selectedPack) {
+      addItem(product, currentVariant, quantity);
+      onClose();
+      return;
+    }
+
+    // Optional: customer explicitly selected a multipack.
+    const cartVariant = {
+      ...currentVariant,
+      id: `${currentVariant.id}-pack-${selectedPack.quantity}`,
+      label: `${currentVariant.label} · ${selectedPack.label}${
+        selectedPack.discountPercent
+          ? ` · Save ${selectedPack.discountPercent}%`
+          : ""
+      }`,
+      price: packPrice,
+      stock: maxPacks,
+      inStock: maxPacks > 0,
+    };
 
     addItem(product, cartVariant, quantity);
 
@@ -285,8 +302,9 @@ export default function QuickViewModal({ product, open, onClose }) {
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    disabled={quantity <= 1}
                     aria-label="Decrease quantity"
-                    className="text-primary grid size-10 place-items-center rounded-full transition hover:bg-white"
+                    className="text-primary grid size-10 place-items-center rounded-full transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <Minus size={18} />
                   </button>
@@ -300,9 +318,9 @@ export default function QuickViewModal({ product, open, onClose }) {
                     onClick={() =>
                       setQuantity((q) => Math.min(maxPacks, q + 1))
                     }
-                    disabled={quantity >= maxPacks}
+                    disabled={!isAvailable || quantity >= maxPacks}
                     aria-label="Increase quantity"
-                    className="text-primary grid size-10 place-items-center rounded-full transition hover:bg-white disabled:opacity-40"
+                    className="text-primary grid size-10 place-items-center rounded-full transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <Plus size={18} />
                   </button>

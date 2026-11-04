@@ -7,11 +7,20 @@ import Footer from "../components/Footer";
 import CartShell from "@/components/cart/CartShell";
 
 export const metadata = {
-  title: "100 Peptide | Research Peptides",
+  title: "100 Peptides Research | Premium Research Peptides",
   description:
-    "Discover advanced peptide skincare designed to nourish, restore, and elevate your everyday skincare routine.",
+    "Explore research peptides at 100 Peptides Research. Browse BPC-157, TB-500, GHK-Cu, CJC-1295, and more compounds for laboratory research use only.",
+  keywords: [
+    "100 Peptides Research",
+    "Research Peptides",
+    "Laboratory Research Peptides",
+    "BPC-157",
+    "TB-500",
+    "GHK-Cu",
+    "CJC-1295",
+    "Peptide Research",
+  ],
 };
-
 const headingFont = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-bricolage",

@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 
 import { getProducts } from "@/data/products";
+import ShopHero from "@/components/ShopHero";
 
 const allProducts = getProducts();
 
@@ -554,121 +555,10 @@ export default function ShopCollection() {
   }, []);
 
   return (
-    <main className="min-h-screen">
-      {/* SHOP HERO */}
-      <section
-        aria-labelledby="shop-heading"
-        className="relative isolate overflow-hidden bg-[#d4e9fa] px-5 pt-28 pb-16 sm:px-8 lg:pt-34 lg:pb-20"
-      >
-        {/* GRADIENT */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(115deg,#e4f1ff_0%,#c8e3fa_45%,#a7cff2_100%)]"
-        />
-
-        {/* BACKGROUND CIRCLES */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-36 -right-28 size-[430px] rounded-full border border-white/35 sm:size-[570px]"
-        />
-
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-8 -bottom-72 size-[480px] rounded-full border border-white/30 sm:size-[700px]"
-        />
-
-        {/* CONTENT */}
-        <div className="relative mx-auto max-w-7xl">
-          {/* BREADCRUMB */}
-          <nav
-            aria-label="Breadcrumb"
-            className="mb-9 flex items-center gap-2 text-[12px] font-medium text-[#476d98]"
-          >
-            <Link href="/" className="hover:text-primary transition-colors">
-              Home
-            </Link>
-
-            <span className="text-[#8bb6db]">/</span>
-
-            <span className="text-primary font-semibold">Shop All</span>
-          </nav>
-
-          <div
-            ref={heroRef}
-            className="relative grid min-h-[350px] grid-cols-1 items-center gap-8 lg:min-h-[420px] lg:grid-cols-[1.1fr_0.9fr]"
-          >
-            {/* LEFT — HEADING */}
-            <div className="relative z-20 max-w-[750px]">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/65 bg-white/45 px-4 py-2 backdrop-blur-md">
-                <FlaskConical size={15} className="text-[#397fce]" />
-
-                <span className="text-primary text-[10px] font-bold tracking-[0.17em] uppercase">
-                  100 Peptides Research
-                </span>
-              </div>
-
-              <h1
-                id="shop-heading"
-                className="font-heading text-primary text-[clamp(43px,6.5vw,85px)] leading-[1.02] font-semibold tracking-[-0.065em]"
-              >
-                Explore the
-                <br />
-                <span className="text-[#397fce]">Research Collection.</span>
-              </h1>
-            </div>
-
-            {/* RIGHT — ANIMATED PRODUCT SHOWCASE */}
-            <div className="relative mx-auto h-[290px] w-full max-w-[460px] sm:h-[370px] lg:h-[420px] lg:max-w-none">
-              {/* BACKGROUND GLOW */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute top-1/2 left-1/2 h-[70%] w-[75%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#69aaf5]/25 blur-[65px]"
-              />
-
-              {/* DECORATIVE RING */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute top-1/2 left-1/2 size-[260px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/40 sm:size-[340px]"
-              />
-
-              {/* STANDING PRODUCT — BPC-157 */}
-              <div className="absolute top-[2%] right-[12%] z-10 h-[90%] w-[48%] -rotate-[9deg]">
-                <div ref={standingBottleRef} className="relative h-full w-full">
-                  <Image
-                    src="/assets/bpc-157.png"
-                    alt="BPC-157 research peptide vial"
-                    fill
-                    priority
-                    sizes="(max-width: 640px) 170px, 260px"
-                    className="object-contain drop-shadow-[0_26px_30px_rgba(11,27,63,0.22)]"
-                  />
-                </div>
-              </div>
-
-              {/* LYING PRODUCT — TB-500 */}
-              <div className="absolute bottom-[5%] left-[5%] z-20 h-[65%] w-[60%] -rotate-[68deg]">
-                <div ref={lyingBottleRef} className="relative h-full w-full">
-                  <Image
-                    src="/assets/tb-500.png"
-                    alt="TB-500 research peptide vial"
-                    fill
-                    priority
-                    sizes="(max-width: 640px) 190px, 290px"
-                    className="object-contain drop-shadow-[0_24px_25px_rgba(11,27,63,0.25)]"
-                  />
-                </div>
-              </div>
-
-              {/* SOFT GROUND SHADOW */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute right-[10%] bottom-[5%] left-[12%] h-[30px] rounded-full bg-[#3775b7]/15 blur-[20px]"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
+    <main className="min-h-svh px-4 pt-28 pb-20 sm:px-8 sm:pt-32">
+      <div className="mx-auto max-w-7xl support-entrance">
+        <ShopHero />
+      </div>
       {/* PRODUCT COLLECTION */}
       <section
         id="shop-products"

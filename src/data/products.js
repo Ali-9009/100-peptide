@@ -87,7 +87,7 @@ export const products = [
       },
     ],
 
-    defaultVariant: 0,
+    defaultVariant: 1,
 
     rating: null,
     reviews: null,
@@ -135,7 +135,7 @@ export const products = [
       },
     ],
 
-    defaultVariant: 0,
+    defaultVariant: 1,
 
     rating: null,
     reviews: null,
@@ -183,7 +183,7 @@ export const products = [
       },
     ],
 
-    defaultVariant: 0,
+    defaultVariant: 1,
 
     rating: null,
     reviews: null,

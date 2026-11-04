@@ -146,7 +146,7 @@ function Heading({ eyebrow, title, accent, description, center = false }) {
         {title} {accent && <span className="text-[#418fce]">{accent}</span>}
       </h2>
       {description && (
-        <p className="mt-5 max-w-[590px] text-md leading-[1.9] text-[#67819a]">
+        <p className="text-md mt-5 max-w-[590px] leading-[1.9] text-[#67819a]">
           {description}
         </p>
       )}
@@ -518,7 +518,8 @@ export default function PartnerProgramClient({ products = [] }) {
     <main className="overflow-x-clip text-[#0b1b3f]">
       <div className="px-4 pt-28 sm:px-7 sm:pt-32">
         <div className="mx-auto max-w-7xl">
-          <section className="relative isolate overflow-hidden rounded-[30px] bg-[linear-gradient(122deg,#091833_0%,#0b1b3f_48%,#20588f_100%)] px-6 pt-14 pb-12 text-white sm:rounded-[38px] sm:px-11 sm:py-20 lg:min-h-[600px] lg:px-16">
+
+          <section className="support-entrance relative isolate overflow-hidden bg-[linear-gradient(115deg,#07152f_0%,#0b1b3f_47%,#24548c_100%)] px-6 py-14 text-white rounded-3xl sm:px-12 sm:py-20 lg:px-16">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute -top-36 -right-44 size-[590px] rounded-full bg-[#5bb6ff]/20 blur-[95px]"
@@ -528,7 +529,7 @@ export default function PartnerProgramClient({ products = [] }) {
                 <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] font-bold tracking-[.18em] text-[#b2dcfb] uppercase">
                   <Handshake size={15} /> The Partner Collective
                 </span>
-                <h1 className="font-heading mt-8 text-[clamp(48px,6.5vw,92px)] leading-[.99] font-semibold tracking-[-.075em]">
+                <h1 className="font-heading mt-7 text-[clamp(43px,6vw,78px)] leading-[1.02] font-semibold tracking-[-0.065em]">
                   Good research.
                   <br />
                   <span className="text-[#93d3ff]">Shared further.</span>

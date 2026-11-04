@@ -26,6 +26,7 @@ const getVariant = (product) =>
   product.variants?.[product.defaultVariant] || product.variants?.[0] || null;
 
 export default function ProductOrbit() {
+  const unlockTimerRef = useRef(null);
   const sectionRef = useRef(null);
   const trackRef = useRef(null);
   const touchStartRef = useRef(null);
@@ -107,9 +108,6 @@ export default function ProductOrbit() {
     };
   }, []);
 
-  // ------------------------------------
-  // Slide navigation
-  // ------------------------------------
   const move = (direction) => {
     if (lockedRef.current || count < 2) return;
 
@@ -121,19 +119,24 @@ export default function ProductOrbit() {
         const next = (((index - count + direction) % count) + count) % count;
         return count + next;
       });
+
       lockedRef.current = false;
       return;
     }
 
     setCurrentIndex((index) => index + direction);
+
+    // Fallback: never leave the slider permanently locked.
+    window.clearTimeout(unlockTimerRef.current);
+
+    unlockTimerRef.current = window.setTimeout(() => {
+      lockedRef.current = false;
+    }, SLIDE_DURATION + 150);
   };
 
   const nextSlide = () => move(1);
   const previousSlide = () => move(-1);
 
-  // ------------------------------------
-  // Seamless loop reset
-  // ------------------------------------
   const handleTransitionEnd = (event) => {
     if (
       event.target !== trackRef.current ||
@@ -141,6 +144,8 @@ export default function ProductOrbit() {
     ) {
       return;
     }
+
+    window.clearTimeout(unlockTimerRef.current);
 
     lockedRef.current = false;
 
@@ -175,15 +180,23 @@ export default function ProductOrbit() {
       return;
     }
 
-    timerRef.current = window.setInterval(() => {
+    timerRef.current = window.setTimeout(() => {
       move(1);
     }, AUTO_DELAY);
 
     return () => {
-      window.clearInterval(timerRef.current);
+      window.clearTimeout(timerRef.current);
     };
-  }, [playing, hovering, focused, visible, pageVisible, reducedMotion, count]);
-
+  }, [
+    currentIndex,
+    playing,
+    hovering,
+    focused,
+    visible,
+    pageVisible,
+    reducedMotion,
+    count,
+  ]);
   // ------------------------------------
   // Scroll entrance animation
   // ------------------------------------
@@ -237,6 +250,8 @@ export default function ProductOrbit() {
   useEffect(() => {
     return () => {
       window.clearInterval(timerRef.current);
+      window.clearTimeout(unlockTimerRef.current);
+
       if (resetFrameRef.current) {
         cancelAnimationFrame(resetFrameRef.current);
       }
@@ -364,16 +379,11 @@ export default function ProductOrbit() {
                       />
 
                       {/* BOTTLE CURVE LOGIC */}
-                      <div className="relative z-10 h-full w-full max-w-[180px] sm:max-w-[200px]">
+                      <div className="relative h-full w-full">
                         <div
-                          className={`relative h-full w-full origin-bottom ${
-                            reducedMotion
-                              ? ""
-                              : "animate-[curvedFloat_4s_ease-in-out_infinite]"
-                          }`}
+                          className="product-orbit-float relative h-full w-full"
                           style={{
-                            transform: `rotate(${(index - (currentIndex + perView / 2 - 0.5)) * 5}deg) translateY(${Math.abs(index - (currentIndex + perView / 2 - 0.5)) * 8}px)`,
-                            animationDelay: `${(index % count) * -0.7}s`,
+                            animationDelay: `${(index % count) * -0.8}s`,
                           }}
                         >
                           <Image
@@ -398,8 +408,12 @@ export default function ProductOrbit() {
 
                     {/* PRODUCT INFO */}
                     <div className="relative z-20 mt-4 text-center">
-                      <span className="block font-sans text-[11px] font-semibold text-[#397fce]">
+                      {/* <span className="block font-sans text-[11px] font-semibold text-[#397fce]">
                         {variant?.label || "Research Compound"}
+                      </span> */}
+
+                      <span className="block font-sans text-[11px] font-semibold text-[#397fce]">
+                        10 mg
                       </span>
 
                       <div className="mt-1 flex items-center justify-center gap-2">

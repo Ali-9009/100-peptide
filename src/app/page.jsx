@@ -9,13 +9,13 @@ import OrderCTA from "@/components/OrderCTA";
 import FAQ from "@/components/FAQ";
 import ProductOrbit from "@/components/ProductOrbit";
 import ShippingMap from "@/components/ShippingMap";
-import ResearchMarquee from "@/components/ResearchMarquee";
+// import ResearchMarquee from "@/components/ResearchMarquee";
 export default function HomePage() {
   return (
     <>
       <Hero />
 
-      <ResearchMarquee />
+      {/* <ResearchMarquee /> */}
 
       <section id="shop" className="bg-white px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">

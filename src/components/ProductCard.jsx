@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 import Link from "next/link";
@@ -70,26 +70,6 @@ export default function ProductCard({ product, onAddToCart }) {
   const closeQuickView = () => {
     setIsQuickViewOpen(false);
   };
-
-  useEffect(() => {
-    if (!isQuickViewOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const handleEscape = (event) => {
-      if (event.key === "Escape") {
-        setIsQuickViewOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, [isQuickViewOpen]);
 
   const handleAddToCart = () => {
     if (!isAvailable) return;

@@ -246,7 +246,7 @@ export default function COAClient({ products = [] }) {
         {/* =====================================
             HERO
         ===================================== */}
-        <section className="relative isolate overflow-hidden rounded-[30px] bg-[linear-gradient(115deg,#07152f_0%,#0b1b3f_47%,#24548c_100%)] px-6 py-14 text-white sm:rounded-[36px] sm:px-12 sm:py-20 lg:px-16">
+        <section className="support-entrance relative isolate overflow-hidden rounded-3xl bg-[linear-gradient(115deg,#07152f_0%,#0b1b3f_47%,#24548c_100%)] px-6 py-10 text-white sm:px-10 sm:py-12 lg:px-14 lg:py-10">
           {/* GLOW */}
           <div
             aria-hidden="true"
