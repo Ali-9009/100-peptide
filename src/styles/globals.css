@@ -354,3 +354,177 @@ html {
     animation: none;
   }
 }
+
+
+
+
+
+
+
+/* =====================================
+   ENTRY GATE — SINGLE VIEWPORT
+===================================== */
+
+.entry-gate {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Compact screens */
+@media (max-height: 800px) {
+  .entry-panel {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .entry-top-label {
+    margin-bottom: 12px;
+  }
+
+  .entry-heading {
+    font-size: clamp(32px, 4.2vw, 58px);
+  }
+
+  .entry-description {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .entry-conditions {
+    margin-top: 14px;
+  }
+
+  .entry-condition {
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+
+  .entry-form {
+    margin-top: 12px;
+  }
+
+  .entry-checkboxes {
+    row-gap: 7px;
+  }
+
+  .entry-button {
+    margin-top: 12px;
+  }
+
+  .entry-disclaimer {
+    margin-top: 9px;
+  }
+
+  .entry-footer {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+}
+
+/* Smaller mobile screens */
+@media (max-width: 639px) {
+  .entry-mobile-brand {
+    margin-bottom: 12px;
+  }
+
+  .entry-heading {
+    font-size: clamp(30px, 8vw, 43px);
+  }
+
+  .entry-condition-title {
+    font-size: 14px;
+  }
+
+  .entry-condition-description {
+    font-size: 10px;
+  }
+}
+
+/* Very short phones / landscape */
+@media (max-height: 650px) {
+  .entry-mobile-brand {
+    margin-bottom: 8px;
+  }
+
+  .entry-top-label {
+    margin-bottom: 8px;
+  }
+
+  .entry-heading {
+    font-size: clamp(28px, 4vw, 48px);
+  }
+
+  .entry-description {
+    margin-top: 7px;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .entry-conditions {
+    margin-top: 10px;
+  }
+
+  .entry-condition {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .entry-condition-description {
+    margin-top: 2px;
+  }
+
+  .entry-form {
+    margin-top: 9px;
+  }
+
+  .entry-checkboxes {
+    row-gap: 5px;
+  }
+
+  .entry-button {
+    margin-top: 10px;
+    min-height: 40px;
+  }
+
+  .entry-footer {
+    margin-top: 9px;
+    padding-top: 8px;
+  }
+}
+
+/* Extremely short screens: prioritize essential controls */
+@media (max-height: 560px) {
+  .entry-mobile-brand {
+    display: none;
+  }
+
+  .entry-footer {
+    display: none;
+  }
+
+  .entry-disclaimer {
+    display: none;
+  }
+
+  .entry-top-label {
+    margin-bottom: 6px;
+  }
+
+  .entry-heading {
+    font-size: 28px;
+  }
+
+  .entry-condition-title {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry-gate *,
+  .entry-gate *::before,
+  .entry-gate *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
